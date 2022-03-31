@@ -22,4 +22,4 @@ So it was 2022's summer break and I was bored. I have decided to start pursueing
 
 ## Notes
 * I'll probably be too lazy and play video games instead.
-* Thanks to Greer Viau for inspiring me. I'll probably learn a lot from your SnakeAI project.
+* Thanks to Greer Viau for inspiring me. I'll probably learn a lot from your [SnakeAI](https://github.com/greerviau/SnakeAI/tree/master/SnakeAI) project.
