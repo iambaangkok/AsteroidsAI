@@ -18,7 +18,7 @@ class AsteriodsGame:
 
     def run(self):
         self.setup()
-        
+
         while(self.gameState != 0):
             self.getInput()
             self.update()
@@ -37,6 +37,8 @@ class AsteriodsGame:
 
     def draw(self):
         self.WINDOW.fill(Colors.WHITE)
+        
+        pygame.display.update()
 
 
 
