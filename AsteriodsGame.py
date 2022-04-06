@@ -1,5 +1,8 @@
 import pygame
 import Colors
+import Config
+from Player import Player
+from pygame import Vector2
 
 
 
@@ -8,8 +11,10 @@ def main():
     game.run()
 
 class AsteriodsGame:
-    SCREEN_WIDTH, SCREEN_HEIGHT = 1280,720
-    WINDOW = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    
+    window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
+
+    player = Player()
 
     gameState = 1
 
@@ -36,7 +41,11 @@ class AsteriodsGame:
         pass
 
     def draw(self):
-        self.WINDOW.fill(Colors.WHITE)
+        self.window.fill(Colors.BLACK)
+        #pygame.draw.circle(self.WINDOW, Colors.GREEN_JUNGLE, (Config.SCREEN_WIDTH/2, Config.SCREEN_HEIGHT/2), 20, 1)
+
+        playerPolygon = self.player.getPolygonAtPoint(Vector2(Config.screen_width/2, Config.screen_height/2))
+        pygame.draw.polygon(self.window, Colors.GREEN_JUNGLE, playerPolygon, 1)
         
         pygame.display.update()
 
