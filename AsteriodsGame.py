@@ -14,6 +14,7 @@ class AsteriodsGame:
     
     window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
 
+
     player = Player()
 
     gameState = 1
@@ -38,6 +39,7 @@ class AsteriodsGame:
                 self.gameState = 0
 
     def update(self):
+        self.player.update()
         pass
 
     def draw(self):
