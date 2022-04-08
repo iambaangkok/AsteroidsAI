@@ -8,30 +8,33 @@ import Config
 import Colors
 
 class Player:
-    polygon = [
-        Vector2(0,8),
-        Vector2(-5,-4),
-        Vector2(0,-3),
-        Vector2(5,-4)
-    ]
-    circleRadius = 8
-    polygonScale = 4
+    def __init__(self):
+        self.polygon = [
+            Vector2(0,8),
+            Vector2(-5,-4),
+            Vector2(0,-3),
+            Vector2(5,-4)
+        ]
+        self.circleRadius = 8
+        self.scale = 2
 
-    polygonColor = Colors.GREEN_JUNGLE
-    circleColor = Colors.MAGENTA
+        self.polygonColor = Colors.GREEN_JUNGLE
+        self.circleColor = Colors.MAGENTA
 
-    rotation = 90
-    angularSpeed = 0
-    angularSpeedMax = 0.4
-    angularAcceleration = 0.02
-    angularDeceleration = 0.001
-    
-    x = Config.screen_width/2
-    y = Config.screen_height/2
-    moveSpeed = Vector2(0,0)
-    moveSpeedMax = 0.4
-    moveAcceleration = 0.02
-    moveDeceleration = 0.0001
+        self.rotation = 90
+        self.angularSpeed = 0
+        self.angularSpeedMax = 0.4
+        self.angularAcceleration = 0.02
+        self.angularDeceleration = 0.001
+        
+        self.x = Config.screen_width/2
+        self.y = Config.screen_height/2
+        self.moveSpeed = Vector2(0,0)
+        self.moveSpeedMax = 0.4
+        self.moveAcceleration = 0.02
+        self.moveDeceleration = 0.0001
+
+        #####
 
     def update(self, _dt):
         keys = pygame.key.get_pressed()
@@ -54,7 +57,11 @@ class Player:
 
         self.angularSpeed = clamp(self.angularSpeed, -self.angularSpeedMax, self.angularSpeedMax)
         self.rotation += self.angularSpeed * _dt
-
+        
+        if(self.rotation >= 360):
+            self.rotation -= 360
+        if(self.rotation <= -360):
+            self.rotation += 360
 
         # movement
         if keys[pygame.K_w]:
@@ -99,7 +106,7 @@ class Player:
 
     def drawHitBox(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)
-        pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.polygonScale, 1)
+        pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.scale, 1)
 
     def getPolygon(self):
         return self.getPolygonAtPoint((self.x,self.y))
@@ -108,7 +115,7 @@ class Player:
         newPolygon = deepcopy(self.polygon)
         for i in range(len(newPolygon)):
             newPolygon[i] = newPolygon[i].rotate(self.rotation);
-            newPolygon[i] = newPolygon[i] * self.polygonScale
+            newPolygon[i] = newPolygon[i] * self.scale
             newPolygon[i] += point
 
         return newPolygon

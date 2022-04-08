@@ -1,5 +1,6 @@
 from time import sleep
 import pygame
+from AsteriodManager import AsteriodManager
 import Colors
 import Config
 from Player import Player
@@ -17,6 +18,7 @@ class AsteriodsGame:
     clock = pygame.time.Clock()
 
     player = Player()
+    astManager = AsteriodManager()
 
     gameState = 1
 
@@ -43,6 +45,7 @@ class AsteriodsGame:
             if event.type == pygame.QUIT:
                 self.gameState = 0
         self.player.update(_dt)
+        self.astManager.update(_dt)
 
     def draw(self):
         self.window.fill(Colors.BLACK)
@@ -51,6 +54,8 @@ class AsteriodsGame:
         self.player.draw(self.window)
         self.player.drawHitBox(self.window)
         
+        self.astManager.draw(self.window)
+
         pygame.display.update()
 
 
