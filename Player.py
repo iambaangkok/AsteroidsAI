@@ -5,15 +5,20 @@ from pygame import Vector2
 
 from Utility import clamp
 import Config
+import Colors
 
 class Player:
     polygon = [
-        Vector2(0,10),
-        Vector2(-5,-2),
-        Vector2(0,1),
-        Vector2(5,-2)
+        Vector2(0,8),
+        Vector2(-5,-4),
+        Vector2(0,-3),
+        Vector2(5,-4)
     ]
+    circleRadius = 8
     polygonScale = 4
+
+    polygonColor = Colors.GREEN_JUNGLE
+    circleColor = Colors.MAGENTA
 
     rotation = 90
     angularSpeed = 0
@@ -74,7 +79,6 @@ class Player:
             factor = self.moveSpeedMax / self.moveSpeed.magnitude()
             self.moveSpeed *= factor
 
-        print((self.moveSpeed.x, self.moveSpeed.y))
         
         self.x += self.moveSpeed.x * _dt
         self.y += self.moveSpeed.y * _dt
@@ -90,6 +94,12 @@ class Player:
         if self.y > Config.screen_height:
             self.y = 0
 
+    def draw(self, window):
+        pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), 1)
+
+    def drawHitBox(self, window):
+        pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)
+        pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.polygonScale, 1)
 
     def getPolygon(self):
         return self.getPolygonAtPoint((self.x,self.y))
@@ -101,5 +111,4 @@ class Player:
             newPolygon[i] = newPolygon[i] * self.polygonScale
             newPolygon[i] += point
 
-        #print(newPolygon)#[0], " ", self.polygon[0])
         return newPolygon

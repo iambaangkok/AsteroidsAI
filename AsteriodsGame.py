@@ -48,8 +48,8 @@ class AsteriodsGame:
         self.window.fill(Colors.BLACK)
         #pygame.draw.circle(self.WINDOW, Colors.GREEN_JUNGLE, (Config.SCREEN_WIDTH/2, Config.SCREEN_HEIGHT/2), 20, 1)
 
-        playerPolygon = self.player.getPolygon()
-        pygame.draw.polygon(self.window, Colors.GREEN_JUNGLE, playerPolygon, 1)
+        self.player.draw(self.window)
+        self.player.drawHitBox(self.window)
         
         pygame.display.update()
 
