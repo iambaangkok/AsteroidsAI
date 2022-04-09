@@ -32,24 +32,22 @@ class Asteriod:
 
         self.scale = random.random() * 3 + 3
         self.rotation = random.randint(0, 360)
-        self.moveSpeedMax = random.random() * 0.2 + 0.05
+        self.moveSpeedMax = random.random() * 0.075 + 0.025
 
         if((self.rotation > 270+45 and self.rotation <= 0) or (self.rotation >= 0 and self.rotation < 0+45)): #top spawn
-            self.x = random.randint(1,Config.screen_width-1)
-            self.y = 0+1
+            self.x = random.randint(Config.game_left+1,Config.game_right-1)
+            self.y = Config.game_top+1
         elif(self.rotation >= 90-45 and self.rotation < 90+45): #right spawn
-            self.x = Config.screen_width-1
-            self.y = random.randint(1,Config.screen_height-1)
+            self.x = Config.game_right-1
+            self.y = random.randint(Config.game_top+1,Config.game_bottom-1)
         elif(self.rotation >= 180-45 and self.rotation < 180-45): #bottom spawn
-            self.x = random.randint(1,Config.screen_width-1)
-            self.y = Config.screen_height-1
-        else: #top spawn
-            self.x = 0+1
-            self.y = random.randint(1,Config.screen_height-1)
+            self.x = random.randint(Config.game_left+1,Config.game_right-1)
+            self.y = Config.game_bottom-1
+        else: #left spawn
+            self.x = Config.game_left+1
+            self.y = random.randint(Config.game_left+1,Config.game_right-1)
             
         
-        
-
         forward = Vector2(0,1).rotate(self.rotation).normalize()
         self.moveSpeed.x = forward.x * self.moveSpeedMax
         self.moveSpeed.y = forward.y * self.moveSpeedMax
@@ -64,16 +62,16 @@ class Asteriod:
         self.x += self.moveSpeed.x * _dt
         self.y += self.moveSpeed.y * _dt
 
-        # screen border teleport
-        if self.x < 0 :
-            self.x = Config.screen_width
-        if self.x > Config.screen_width:
-            self.x = 0
+        # screen border collision
+        if self.x < Config.game_left :
+            self.x = Config.game_right
+        if self.x > Config.game_right:
+            self.x = Config.game_left
 
-        if self.y < 0 :
-            self.y = Config.screen_height
-        if self.y > Config.screen_height:
-            self.y = 0
+        if self.y < Config.game_top :
+            self.y = Config.game_bottom
+        if self.y > Config.game_bottom:
+            self.y = Config.game_top
 
     def draw(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)

@@ -30,7 +30,7 @@ class BulletManager:
                     bullet.markedForDelete = True
             
             # screen border collision
-            if bullet.x < 0 or bullet.x > Config.screen_width or bullet.y < 0 or bullet.y > Config.screen_height:
+            if bullet.x < Config.game_left or bullet.x > Config.game_right or bullet.y < Config.game_top or bullet.y > Config.game_bottom:
                 bullet.markedForDelete = True
 
             # delete

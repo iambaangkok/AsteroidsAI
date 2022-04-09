@@ -28,14 +28,14 @@ class Player:
         self.rotation = 90
         self.angularSpeed = 0
         self.angularSpeedMax = 0.4
-        self.angularAcceleration = 0.02
-        self.angularDeceleration = 0.001
+        self.angularAcceleration = 0.0006
+        self.angularDeceleration = 0.0006
         
-        self.x = Config.screen_width/2
-        self.y = Config.screen_height/2
+        self.x = Config.game_left + Config.game_width/2
+        self.y = Config.game_top + Config.game_height/2
         self.moveSpeed = Vector2(0,0)
         self.moveSpeedMax = 0.4
-        self.moveAcceleration = 0.02
+        self.moveAcceleration = 0.0006
         self.moveDeceleration = 0.0001
 
         self.fireRate = 2 # x shots per second
@@ -61,7 +61,7 @@ class Player:
         if keys[pygame.K_d]:
             angularInput += 1            
 
-        self.angularSpeed += angularInput * self.angularAcceleration
+        self.angularSpeed += angularInput * self.angularAcceleration * _dt
         sign = 0
         if angularInput == 0:
             sign = np.sign(self.angularSpeed)
@@ -81,8 +81,8 @@ class Player:
         # movement
         if keys[pygame.K_w]:
             forward = Vector2(0,1).rotate(self.rotation).normalize()
-            self.moveSpeed.x += forward.x * self.moveAcceleration
-            self.moveSpeed.y += forward.y * self.moveAcceleration
+            self.moveSpeed.x += forward.x * self.moveAcceleration * _dt
+            self.moveSpeed.y += forward.y * self.moveAcceleration * _dt
 
 
         signX = np.sign(self.moveSpeed.x)
@@ -105,16 +105,16 @@ class Player:
         self.x += self.moveSpeed.x * _dt
         self.y += self.moveSpeed.y * _dt
 
-        # screen border teleport
-        if self.x < 0 :
-            self.x = Config.screen_width
-        if self.x > Config.screen_width:
-            self.x = 0
+        # screen border collision
+        if self.x < Config.game_left :
+            self.x = Config.game_right
+        if self.x > Config.game_right:
+            self.x = Config.game_left
 
-        if self.y < 0 :
-            self.y = Config.screen_height
-        if self.y > Config.screen_height:
-            self.y = 0
+        if self.y < Config.game_top :
+            self.y = Config.game_bottom
+        if self.y > Config.game_bottom:
+            self.y = Config.game_top
 
         # shooting
         self.shootIntervalCounter += _dt/1000

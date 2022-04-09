@@ -35,6 +35,7 @@ class Bullet:
         self.moveDeceleration = 0.0001
         
         self.markedForDelete = False
+
         #####
 
         forward = Vector2(0,1).rotate(player.rotation).normalize()

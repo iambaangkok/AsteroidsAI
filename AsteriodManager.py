@@ -7,7 +7,7 @@ from Utility import checkCollisionCircle
 class AsteriodManager:
 
 
-    spawnRate = 1 # x per second
+    spawnRate = 0.75 # x per second
     spawnInterval = 1/spawnRate
     spawnIntervalCounter = 0
 
