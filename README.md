@@ -3,9 +3,9 @@
 So it was 2022's summer break and I was bored. I have decided to start pursueing my goal of becoming a researcher in neural network / deep learning and those stuff. I thought: "hmm...I should try making a neural network project" and there was already a SnakeAI, a TetrisAI so I decided to make this **AsteroidsAI.** 
 
 ## Specifications
-* The project will be written in **python3** with **kivy** gui library. 
-* I won't be using keras or tensorflow yet. This will all be coded from ground up.
-* Actions are instant, meaning no inertia. (for now)
+* The project will be written in **python3** with **pygame** library. 
+* I won't be using keras or tensorflow. This will all be coded from ground up.
+* Actions have acceleration and inertia.
 * There will be configurable mutation rate.
 
 ## Neurons
