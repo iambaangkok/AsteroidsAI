@@ -2,13 +2,17 @@ from copy import deepcopy
 import numpy as np
 import pygame
 from pygame import Vector2
+from Bullet import Bullet
 
 from Utility import clamp
 import Config
 import Colors
 
 class Player:
-    def __init__(self):
+    def __init__(self, game):
+
+        self.game = game
+
         self.polygon = [
             Vector2(0,8),
             Vector2(-5,-4),
@@ -34,9 +38,20 @@ class Player:
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
 
+        self.fireRate = 2 # x shots per second
+        self.shootInterval = 1/self.fireRate
+        self.shootIntervalCounter = 0
+
+        self.isAlive = True
+
         #####
 
     def update(self, _dt):
+        if not self.isAlive:
+            self.moveSpeed = Vector2(0,0)
+            self.polygonColor = Colors.RED
+            return
+
         keys = pygame.key.get_pressed()
 
         # angular 
@@ -100,6 +115,16 @@ class Player:
             self.y = Config.screen_height
         if self.y > Config.screen_height:
             self.y = 0
+
+        # shooting
+        self.shootIntervalCounter += _dt/1000
+        if keys[pygame.K_SPACE] or keys[pygame.K_k]:
+            if self.shootIntervalCounter >= self.shootInterval:
+                self.shootIntervalCounter = 0
+                self.shoot()
+
+    def shoot(self):
+        self.game.bulletsManager.shoot()
 
     def draw(self, window):
         pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), 1)

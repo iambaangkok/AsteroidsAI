@@ -27,9 +27,10 @@ class Asteriod:
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
         
+        self.markedForDelete = False
         #####
 
-        self.scale = random.random() * 3 + 1
+        self.scale = random.random() * 3 + 3
         self.rotation = random.randint(0, 360)
         self.moveSpeedMax = random.random() * 0.2 + 0.05
 

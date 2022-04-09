@@ -1,11 +1,11 @@
-from time import sleep
 import pygame
-from AsteriodManager import AsteriodManager
-import Colors
-import Config
-from Player import Player
 from pygame import Vector2
 
+import Colors
+import Config
+from AsteriodManager import AsteriodManager
+from BulletManager import BulletManager
+from Player import Player
 
 
 def main():
@@ -14,13 +14,15 @@ def main():
 
 class AsteriodsGame:
     
-    window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
-    clock = pygame.time.Clock()
+    def __init__(self):
+        self.window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
+        self.clock = pygame.time.Clock()
 
-    player = Player()
-    astManager = AsteriodManager()
+        self.player = Player(self)
+        self.astManager = AsteriodManager(self)
+        self.bulletsManager = BulletManager(self)
 
-    gameState = 1
+        self.gameState = 1
 
     def setup(self):
         pygame.display.set_caption("AsteriodsAI")
@@ -44,17 +46,20 @@ class AsteriodsGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.gameState = 0
+
         self.player.update(_dt)
+
         self.astManager.update(_dt)
+        self.bulletsManager.update(_dt)
 
     def draw(self):
         self.window.fill(Colors.BLACK)
-        #pygame.draw.circle(self.WINDOW, Colors.GREEN_JUNGLE, (Config.SCREEN_WIDTH/2, Config.SCREEN_HEIGHT/2), 20, 1)
 
         self.player.draw(self.window)
         self.player.drawHitBox(self.window)
         
         self.astManager.draw(self.window)
+        self.bulletsManager.draw(self.window)
 
         pygame.display.update()
 
