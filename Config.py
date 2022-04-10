@@ -12,3 +12,6 @@ game_bottom = game_y + game_height
 frame_rate = 60
 frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)
+
+
+debug_player_invincible = True

@@ -6,6 +6,7 @@ WHITE_187 = pygame.Color(187,187,187)
 WHITE_153 = pygame.Color(153,153,153)
 WHITE_119 = pygame.Color(119,119,119)
 WHITE_85 = pygame.Color(85,85,85)
+WHITE_52 = pygame.Color(52,52,52)
 WHITE_34 = pygame.Color(34,34,34)
 BLACK = pygame.Color(0,0,0)
 

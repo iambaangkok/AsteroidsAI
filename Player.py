@@ -24,7 +24,7 @@ class Player:
         self.polygonColor = Colors.GREEN_JUNGLE
         self.circleColor = Colors.MAGENTA
 
-        self.rotation = 90
+        self.rotation = 180
         self.angularSpeed = 0
         self.angularSpeedMax = 0.4
         self.angularAcceleration = 0.0006
@@ -46,6 +46,8 @@ class Player:
         #####
 
     def update(self, _dt):
+        if Config.debug_player_invincible:
+            self.isAlive = True
         if not self.isAlive:
             self.moveSpeed = Vector2(0,0)
             self.polygonColor = Colors.RED

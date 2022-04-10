@@ -17,6 +17,9 @@ def main():
 class AsteriodsGame:
     
     def __init__(self):
+        self.setup()
+
+    def setup(self):
         self.window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.clock = pygame.time.Clock()
 
@@ -30,13 +33,27 @@ class AsteriodsGame:
 
         self.gameState = 1
 
-    def setup(self):
         pygame.display.set_caption("AsteriodsAI")
 
     def run(self):
         self.setup()
 
+        while(self.gameState == 0):
+            keys=pygame.key.get_pressed()
+            if keys[pygame.K_r]:
+                self.gameState = 1
+
+            _dt = self.clock.tick(Config.frame_rate)
+            if(_dt < Config.frame_time_millis):
+                pygame.time.wait(Config.frame_time_millis - _dt)
+
         while(self.gameState != 0):
+            keys=pygame.key.get_pressed()
+            if keys[pygame.K_r] and keys[pygame.K_LCTRL]:
+                self.setup()
+
+            #####
+
             _dt = self.clock.tick(Config.frame_rate)
             if(_dt < Config.frame_time_millis):
                 pygame.time.wait(Config.frame_time_millis - _dt)
