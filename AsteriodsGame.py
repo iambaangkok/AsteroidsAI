@@ -80,7 +80,6 @@ class AsteriodsGame:
         self.raycaster.draw(self.window)
 
         self.player.draw(self.window)
-        self.player.drawHitBox(self.window)
         
         self.astManager.draw(self.window)
         self.bulletsManager.draw(self.window)

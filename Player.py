@@ -19,7 +19,7 @@ class Player:
             Vector2(5,-4)
         ]
         self.circleRadius = 8
-        self.scale = 2
+        self.scale = 1.5
 
         self.polygonColor = Colors.GREEN_JUNGLE
         self.circleColor = Colors.MAGENTA
@@ -128,7 +128,9 @@ class Player:
         self.game.bulletsManager.shoot()
 
     def draw(self, window):
-        pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), 1)
+        pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), 0)
+        if Config.debug_player_hitbox_show:
+            self.drawHitBox(window)
 
     def drawHitBox(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)
