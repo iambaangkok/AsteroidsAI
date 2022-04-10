@@ -46,7 +46,6 @@ class Player:
         #####
 
     def update(self, _dt):
-        self.isAlive = True
         if not self.isAlive:
             self.moveSpeed = Vector2(0,0)
             self.polygonColor = Colors.RED

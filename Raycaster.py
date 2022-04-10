@@ -4,7 +4,7 @@ import pygame
 
 from pygame import Vector2
 import Colors
-from Utility import getSlope
+from Utility import getLineCircleIntersectionPoint, getLineEquation, getPointDistance, getPointToLineDistance, getSlope
 
 class Raycaster:
 
@@ -13,10 +13,10 @@ class Raycaster:
         self.game = game
         self.player = game.player
         self.astManager = game.astManager
-        
+
         self.nAngles = 16
         self.degreePerAngle = 360/self.nAngles
-        
+
         self.angles = []
         for i in range(0, self.nAngles):
             self.angles.append(self.degreePerAngle*i)
@@ -25,12 +25,59 @@ class Raycaster:
         self.lineColor1 = Colors.WHITE_153
         self.lineColor2 = Colors.WHITE_34
 
-        self.lengthLimit = 600
+        self.lengthLimit = 800
 
         self.debug = True
 
     def update(self, _dt):
         pass
+
+    def getEndpoint(self, startPoint, endPoint, i = -1):
+
+        # generate line equation Ax + By + C = 0 from (y-y1) = m(x-x1) -> y = mx + (-mx1 + y1) -> mx - y + (-mx1 + y1) = 0
+        # y = mx + C
+        A,B,C,m,p1,p2 = getLineEquation(startPoint, endPoint)
+
+        # check collision with asteriods
+        asteriods = self.astManager.asteriods
+        for j in range(0, len(asteriods)): # with help from khawhom
+            ast = asteriods[j]
+            x3 = ast.x
+            y3 = ast.y
+            
+            distance = getPointToLineDistance(A,B,C,x3,y3)
+            r = ast.circleRadius * ast.scale
+            if (distance <= r): # ray hit the asteroid
+                xMin = min(p1.x,p2.x)
+                xMax = max(p1.x,p2.x)
+                yMin = min(p1.y,p2.y)
+                yMax = max(p1.y,p2.y)
+
+                if (xMin <= x3 and x3 <= xMax and yMin <= y3 and  y3 <= yMax):
+                    # find line-circle intersection point
+
+                    # find circle equation (x-x3)^2 + (y-y3)^2 = r^2
+                    # substitude with linear eq y = mx + C
+                    # (x-x3)^2 + (mx + C -y3)^2 = r^2
+                    # x^2 - 2xx3 + x3^2 + m^2x^2 + 2mx(C-y3) + (C-y3)^2 = r^2
+                    # x = (1/(m^2+1)) * (+- sqrt(-(C*C) + 2y3(C+mx3)-2Cmx3 + m*m*r*r-m*m*x3*x3+r*r-y3*y3)-Cm+my3+x3))
+                    
+                    ansX1, ansX2 = getLineCircleIntersectionPoint(A,B,C,m,x3,y3,r)
+                    if i == 0:
+                        print(i, " ", m)
+                        print(ansX1 , " " , ansX2)
+
+                    ansY1 = m*ansX1+C
+                    ansY2 = m*ansX2+C
+                    
+                    dist1 = getPointDistance(p1.x, p1.y, ansX1, ansY1)
+                    dist2 = getPointDistance(p1.x, p1.y, ansX2, ansY2)
+
+                    if dist1 < getPointDistance(p1.x, p1.y, endPoint.x, endPoint.y):
+                        endPoint = Vector2(ansX1, ansY1)
+                    if dist2 < getPointDistance(p1.x, p1.y, endPoint.x, endPoint.y):
+                        endPoint = Vector2(ansX2, ansY2)
+        return endPoint
 
 
     def draw(self, window):
@@ -39,50 +86,25 @@ class Raycaster:
             forward = self.player.getForwardVector()
             angle = self.angles[i]
             rotatedDirection = forward.rotate(angle).normalize()
-            
+
             startPoint = Vector2(self.player.x, self.player.y) # x1 y1
             endPoint = startPoint + rotatedDirection * self.lengthLimit # x2 y2
 
-            # check collision with asteriods
-            asteriods = self.astManager.asteriods
-            for j in range(0, len(asteriods)): # with help from khawhom
-                # generate line equation Ax + By + C = 0 from (y-y1) = m(x-x1) -> y = mx + (-mx1 + y1) -> mx - y + (-mx1 + y1) = 0 
-                ast = asteriods[j]
+            
 
-                p1 = startPoint
-                p2 = endPoint
-                m = getSlope(p1.x,p2.x,p1.y,p2.y)
+            endPoint = self.getEndpoint(startPoint, endPoint, i)
 
-                A = m
-                B = -1
-                C = (-m * p1.x + p1.y)
-
-                x3 = ast.x
-                y3 = ast.y
-
-                if self.debug:
-                    if i == 0:
-                        pygame.draw.line(window, Colors.RED, startPoint, (x3,y3))
-                        pygame.draw.circle(window, Colors.YELLOW, endPoint, 8, 1)
-                        #pygame.draw.line(window, Colors.RED, (x3,y3), (0,0))
-
-                distance = abs(A*x3 + B*y3 + C)/(math.hypot(A, B))
-                radius = ast.circleRadius * ast.scale
-                if (distance <= radius): # ray hit the asteroid
-                    xMin = min(p1.x,p2.x)
-                    xMax = max(p1.x,p2.x)
-                    yMin = min(p1.y,p2.y)
-                    yMax = max(p1.y,p2.y)
-
-                    if (xMin <= x3 and x3 <= xMax and yMin <= y3 and  y3 <= yMax):
-                        print("hit ", i, distance)
-
+            # actual drawing
+            color = self.lineColor0
             if i == 0:
-                
-                pygame.draw.line(window, self.lineColor0, startPoint, endPoint)
+                color = self.lineColor0
             elif i%2 == 0:
-                pygame.draw.line(window, self.lineColor1, startPoint, endPoint)
+                color = self.lineColor1
             else:
-                pygame.draw.line(window, self.lineColor2, startPoint, endPoint)
-        
+                color = self.lineColor2
+            pygame.draw.line(window, color, startPoint, endPoint)
+            pygame.draw.circle(window, self.lineColor1, endPoint, 8, 1)
+
+            
+
         pass
