@@ -15,6 +15,7 @@ class AsteriodManager:
     def __init__(self, game):
         self.game = game
         self.player = game.player
+        self.scoreManager = game.scoreManager
         self.asteriods = []
 
     def update(self, _dt):
@@ -38,6 +39,7 @@ class AsteriodManager:
             # delete
             if ast.markedForDelete:
                 del ast
+                self.scoreManager.addScoreFromAsteriod()
             else:
                 newAsteriods.append(ast)
         

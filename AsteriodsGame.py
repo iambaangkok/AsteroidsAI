@@ -8,6 +8,7 @@ from AsteriodManager import AsteriodManager
 from BulletManager import BulletManager
 from Player import Player
 from Raycaster import Raycaster
+from ScoreManager import ScoreManager
 
 
 def main():
@@ -20,10 +21,13 @@ class AsteriodsGame:
         self.setup()
 
     def setup(self):
+        pygame.init()
         self.window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.clock = pygame.time.Clock()
 
         self.gameWindow = Rect(Config.game_x, Config.game_y, Config.game_width, Config.game_height)
+
+        self.scoreManager = ScoreManager(self)
 
         self.player = Player(self)
         self.astManager = AsteriodManager(self)
@@ -66,6 +70,8 @@ class AsteriodsGame:
         self.astManager.update(_dt)
         self.bulletsManager.update(_dt)
 
+        self.scoreManager.update(_dt)
+
     def draw(self):
         self.window.fill(Colors.BLACK)
         
@@ -86,6 +92,8 @@ class AsteriodsGame:
 
         # game window border
         pygame.draw.rect(self.window, Colors.WHITE, self.gameWindow, 1)
+        
+        self.scoreManager.draw(self.window)
 
         pygame.display.update()
 

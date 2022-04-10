@@ -26,7 +26,7 @@ class Raycaster:
             self.distance.append(0)
 
 
-        self.lineColor0 = Colors.YELLOW
+        self.lineColor0 = Colors.WHITE_221
         self.lineColor1 = Colors.WHITE_119
         self.lineColor2 = Colors.WHITE_34
 
