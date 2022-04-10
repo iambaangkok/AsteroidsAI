@@ -9,6 +9,7 @@ class ScoreManager:
     
     def __init__(self, game):
         self.game = game
+        self.player = game.player
 
         self.score = 0
         self.scorePerSecond = 50
@@ -18,18 +19,16 @@ class ScoreManager:
         self.x = Config.game_right - self.margin
         self.y = Config.game_top + self.margin
 
-        fonts = pygame.font.get_fonts()
-        print(len(fonts))
-        for f in fonts:
-            print(f)
         self.font = pygame.font.SysFont("UbuntuMono", 24)
 
 
     def update(self, _dt):
-        self.score += self.scorePerSecond * _dt/1000
+        if self.player.isAlive:
+            self.score += self.scorePerSecond * _dt/1000
 
     def addScoreFromAsteriod(self):
-        self.score += self.scorePerAsteriod
+        if self.player.isAlive:
+            self.score += self.scorePerAsteriod
 
     def draw(self, window):
         text = self.font.render('score ' + str(math.floor(self.score)), True, Colors.WHITE)

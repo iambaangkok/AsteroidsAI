@@ -27,9 +27,10 @@ class AsteriodsGame:
 
         self.gameWindow = Rect(Config.game_x, Config.game_y, Config.game_width, Config.game_height)
 
-        self.scoreManager = ScoreManager(self)
 
         self.player = Player(self)
+        self.scoreManager = ScoreManager(self)
+
         self.astManager = AsteriodManager(self)
         self.bulletsManager = BulletManager(self)
 

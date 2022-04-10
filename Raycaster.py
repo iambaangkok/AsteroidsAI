@@ -3,6 +3,7 @@ import math
 import pygame
 
 from pygame import Vector2
+import Config
 import Colors
 from Utility import getLineCircleIntersectionPoint, getLinearEquation, getPointDistance, getPointToLineDistance, getSlope
 
@@ -25,10 +26,12 @@ class Raycaster:
             self.endPoints.append(Vector2(0,0))
             self.distance.append(0)
 
-
+        self.font = pygame.font.SysFont("UbuntuMono", 14)
         self.lineColor0 = Colors.WHITE_221
         self.lineColor1 = Colors.WHITE_119
         self.lineColor2 = Colors.WHITE_34
+        self.circleColor = Colors.WHITE_119
+        self.distanceColor = Colors.WHITE_187
 
         self.lengthLimit = 1000
 
@@ -92,5 +95,14 @@ class Raycaster:
                 color = self.lineColor1
             else:
                 color = self.lineColor2
-            pygame.draw.line(window, color, startPoint, endPoint)
-            pygame.draw.circle(window, self.lineColor1, endPoint, 8, 1)
+
+            if Config.debug_ray_show:
+                pygame.draw.line(window, color, startPoint, endPoint)
+                if Config.debug_ray_tip_show:
+                    pygame.draw.circle(window, self.circleColor, endPoint, 8, 1)
+                if Config.debug_ray_distance_show:
+                    text = self.font.render(str(math.floor(self.distance[i])), True, self.distanceColor)
+                    text_rect = text.get_rect()
+                    text_rect.centerx = self.endPoints[i].x
+                    text_rect.bottom = self.endPoints[i].y
+                    window.blit(text, text_rect)

@@ -53,6 +53,6 @@ class Bullet:
 
     def draw(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)
-        pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.scale, 1)
+        pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.scale, 0)
 
     
