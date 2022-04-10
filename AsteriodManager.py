@@ -7,9 +7,10 @@ from Utility import checkCollisionCircle
 class AsteriodManager:
 
 
-    spawnRate = 0.75 # x per second
+    spawnRate = 0.1 #0.75 # x per second
     spawnInterval = 1/spawnRate
-    spawnIntervalCounter = 0
+    spawnIntervalCounter = spawnInterval #0
+    limit = 1 # no more than x asteriods on screen at same time
 
     def __init__(self, game):
         self.game = game
@@ -21,7 +22,8 @@ class AsteriodManager:
 
         if(self.spawnIntervalCounter >= self.spawnInterval):
             self.spawnIntervalCounter -= self.spawnInterval
-            self.spawn()
+            if(len(self.asteriods) < self.limit):
+                self.spawn()
 
         newAsteriods = []
         

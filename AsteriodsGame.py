@@ -23,9 +23,10 @@ class AsteriodsGame:
         self.gameWindow = Rect(Config.game_x, Config.game_y, Config.game_width, Config.game_height)
 
         self.player = Player(self)
-        self.raycaster = Raycaster(self)
         self.astManager = AsteriodManager(self)
         self.bulletsManager = BulletManager(self)
+
+        self.raycaster = Raycaster(self)
 
         self.gameState = 1
 
@@ -62,7 +63,6 @@ class AsteriodsGame:
         self.window.fill(Colors.BLACK)
         
         # game elements
-        self.raycaster.draw(self.window)
 
         self.player.draw(self.window)
         self.player.drawHitBox(self.window)
@@ -79,6 +79,9 @@ class AsteriodsGame:
 
         # game window border
         pygame.draw.rect(self.window, Colors.WHITE, self.gameWindow, 1)
+
+        self.raycaster.draw(self.window)
+
 
         pygame.display.update()
 
