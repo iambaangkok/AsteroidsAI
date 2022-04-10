@@ -18,7 +18,7 @@ class Bullet:
     def __init__(self, game):
 
         self.game = game
-        player = game.player
+        self.player = game.player
 
         self.circleRadius = 4
         self.scale = 1
@@ -27,8 +27,8 @@ class Bullet:
 
         self.rotation = 90
         
-        self.x = player.x
-        self.y = player.y
+        self.x = self.player.x
+        self.y = self.player.y
         self.moveSpeed = Vector2(0,0)
         self.moveSpeedMax = 0.5
         self.moveAcceleration = 0.02
@@ -38,7 +38,7 @@ class Bullet:
 
         #####
 
-        forward = Vector2(0,1).rotate(player.rotation).normalize()
+        forward = self.player.getForwardVector()
         self.moveSpeed.x = forward.x * self.moveSpeedMax
         self.moveSpeed.y = forward.y * self.moveSpeedMax
 

@@ -7,6 +7,7 @@ import Config
 from AsteriodManager import AsteriodManager
 from BulletManager import BulletManager
 from Player import Player
+from Raycaster import Raycaster
 
 
 def main():
@@ -22,6 +23,7 @@ class AsteriodsGame:
         self.gameWindow = Rect(Config.game_x, Config.game_y, Config.game_width, Config.game_height)
 
         self.player = Player(self)
+        self.raycaster = Raycaster(self)
         self.astManager = AsteriodManager(self)
         self.bulletsManager = BulletManager(self)
 
@@ -46,7 +48,6 @@ class AsteriodsGame:
         pygame.quit()
 
     def update(self, _dt):
-        print(_dt)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -61,11 +62,14 @@ class AsteriodsGame:
         self.window.fill(Colors.BLACK)
         
         # game elements
+        self.raycaster.draw(self.window)
+
         self.player.draw(self.window)
         self.player.drawHitBox(self.window)
         
         self.astManager.draw(self.window)
         self.bulletsManager.draw(self.window)
+
 
         # cover up
         pygame.draw.rect(self.window, Colors.BLACK, Rect(0, 0, Config.game_x, Config.screen_height))

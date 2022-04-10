@@ -2,7 +2,6 @@ from copy import deepcopy
 import numpy as np
 import pygame
 from pygame import Vector2
-from Bullet import Bullet
 
 from Utility import clamp
 import Config
@@ -132,6 +131,9 @@ class Player:
     def drawHitBox(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), self.circleRadius * self.scale, 1)
+
+    def getForwardVector(self):
+        return Vector2(0,1).rotate(self.rotation).normalize()
 
     def getPolygon(self):
         return self.getPolygonAtPoint((self.x,self.y))

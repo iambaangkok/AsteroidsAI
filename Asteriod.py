@@ -16,7 +16,7 @@ class Asteriod:
         self.circleRadius = 8
         self.scale = 4
 
-        self.circleColor = Colors.WHITE
+        self.circleColor = Colors.YELLOW_DIRT
 
         self.rotation = 90
         
