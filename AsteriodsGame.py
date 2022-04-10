@@ -37,16 +37,6 @@ class AsteriodsGame:
 
     def run(self):
         self.setup()
-
-        while(self.gameState == 0):
-            keys=pygame.key.get_pressed()
-            if keys[pygame.K_r]:
-                self.gameState = 1
-
-            _dt = self.clock.tick(Config.frame_rate)
-            if(_dt < Config.frame_time_millis):
-                pygame.time.wait(Config.frame_time_millis - _dt)
-
         while(self.gameState != 0):
             keys=pygame.key.get_pressed()
             if keys[pygame.K_r] and keys[pygame.K_LCTRL]:
@@ -88,7 +78,6 @@ class AsteriodsGame:
         self.astManager.draw(self.window)
         self.bulletsManager.draw(self.window)
 
-
         # cover up
         pygame.draw.rect(self.window, Colors.BLACK, Rect(0, 0, Config.game_x, Config.screen_height))
         pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_x, 0, Config.game_width, Config.game_y))
@@ -97,8 +86,6 @@ class AsteriodsGame:
 
         # game window border
         pygame.draw.rect(self.window, Colors.WHITE, self.gameWindow, 1)
-
-
 
         pygame.display.update()
 
