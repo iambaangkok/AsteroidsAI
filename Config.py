@@ -17,6 +17,7 @@ infopanel_bottom = game_bottom
 infopanel_width = infopanel_right - infopanel_left
 infopanel_height = game_height
 
+speedmultiplier = 1
 frame_rate = 60
 frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)

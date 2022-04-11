@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 import numpy as np
 import pygame
 from pygame import Vector2
@@ -123,7 +124,7 @@ class AsteriodAI:
                 self.frameCount = 0
             
             # genetic algorithm
-            self.frameCount += 1
+            self.frameCount += 1*Config.speedmultiplier
             if(self.frameCount >= self.frameLimit or not self.player.isAlive):
                 self.game.setup()
                 self.player = self.game.player
@@ -138,7 +139,9 @@ class AsteriodAI:
                 inputs.append(self.outputLayer[0][i] > self.activationThreshold)
             
             # game step
-            _dt = Config.frame_time_millis
+            _dt = self.game.clock.tick(Config.frame_rate)*Config.speedmultiplier
+            if(_dt < Config.frame_time_millis/Config.speedmultiplier):
+                pygame.time.wait(Config.frame_time_millis/Config.speedmultiplier - _dt)
             self.game.update(_dt, inputs)
             self.game.draw(False)
 
@@ -146,13 +149,13 @@ class AsteriodAI:
             self.updateUI()
             self.drawUI(self.window)
 
-            pygame.time.wait(Config.frame_time_millis)
+            #pygame.time.wait(math.floor(Config.frame_time_millis/Config.speedmultiplier))
 
         pygame.quit()
 
     def updateUI(self):
         self.textGeneration.text = 'generation: ' + str(self.generation)
-        self.textFrameCount.text = 'simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
+        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
         
 
     def drawUI(self, window):
