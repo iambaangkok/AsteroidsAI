@@ -1,11 +1,12 @@
 
+from cmath import isnan
 import math
 import pygame
 
 from pygame import Vector2
 import Config
 import Colors
-from Utility import getLineCircleIntersectionPoint, getLinearEquation, getPointDistance, getPointToLineDistance, getSlope
+from Utility import getLineCircleIntersectionPoint, getLinearEquation, getPointDistance, getPointToLineDistance, getSlope, getYCircleEquation
 
 class Raycaster:
 
@@ -50,8 +51,13 @@ class Raycaster:
             ast = asteriods[j]
             x3 = ast.x
             y3 = ast.y
+
+            distance = math.inf
+            if m == math.inf:
+                distance = abs(p1.x-x3)
+            else:
+                distance = getPointToLineDistance(A,B,C,x3,y3)
             
-            distance = getPointToLineDistance(A,B,C,x3,y3)
             r = ast.circleRadius * ast.scale
             if (distance <= r): # ray hit the asteroid
                 xMin = min(p1.x,p2.x)
@@ -62,15 +68,20 @@ class Raycaster:
                 ansX1, ansX2 = getLineCircleIntersectionPoint(A,B,C,m,x3,y3,r)
                 ansY1 = m*ansX1+C
                 ansY2 = m*ansX2+C
+
+                if math.isnan(ansX1) or math.isnan(ansX2):
+                    ansX1 = p1.x
+                    ansX2 = p1.x
+                    ansY1, ansY2 = getYCircleEquation(ansX1, r, ast.x, ast.y)
                 
                 dist1 = getPointDistance(p1.x, p1.y, ansX1, ansY1)
                 dist2 = getPointDistance(p1.x, p1.y, ansX2, ansY2)
 
                 if dist1 < getPointDistance(p1.x, p1.y, endPoint.x, endPoint.y):
-                    if ((xMin <= ansX1 and ansX1 <= xMax) or (yMin <= ansY1 and  ansY1 <= yMax)):
+                    if ((xMin <= ansX1 and ansX1 <= xMax) and (yMin <= ansY1 and  ansY1 <= yMax)):
                         endPoint = Vector2(ansX1, ansY1)
                 if dist2 < getPointDistance(p1.x, p1.y, endPoint.x, endPoint.y):
-                    if ((xMin <= ansX2 and ansX2 <= xMax) or (yMin <= ansY2 and  ansY2 <= yMax)):
+                    if ((xMin <= ansX2 and ansX2 <= xMax) and (yMin <= ansY2 and  ansY2 <= yMax)):
                         endPoint = Vector2(ansX2, ansY2)
         return endPoint
 

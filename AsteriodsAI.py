@@ -78,7 +78,7 @@ class AsteriodAI:
         self.weightColor0 = Colors.WHITE_85
         self.weightColor1 = Colors.BLUE
 
-        self.fillCircleThreshold = 0.8
+        self.activationThreshold = 0.8
 
         self.nodeCoords = [[], []]
 
@@ -124,7 +124,7 @@ class AsteriodAI:
             
             # genetic algorithm
             self.frameCount += 1
-            if(self.frameCount >= self.frameLimit):
+            if(self.frameCount >= self.frameLimit or not self.player.isAlive):
                 self.game.setup()
                 self.player = self.game.player
                 self.raycaster = self.game.raycaster
@@ -133,10 +133,13 @@ class AsteriodAI:
 
             # neural network
             self.computeOutput()
+            inputs = []
+            for i in range(0, len(self.outputLayer[0])):
+                inputs.append(self.outputLayer[0][i] > self.activationThreshold)
             
             # game step
             _dt = Config.frame_time_millis
-            self.game.update(_dt)
+            self.game.update(_dt, inputs)
             self.game.draw(False)
 
             # user interface
@@ -160,7 +163,7 @@ class AsteriodAI:
             coordL = deepcopy(self.nodeCoords[self.inputInd][i])
             color = self.nodeColor0.lerp(self.nodeColor1, self.inputLayer[0][i])
             width = 1
-            if self.inputLayer[0][i] >= self.fillCircleThreshold:
+            if self.inputLayer[0][i] >= self.activationThreshold:
                 width = 0
             pygame.draw.circle(window, color, coordL, self.nodeRadius, width)
 
@@ -172,7 +175,7 @@ class AsteriodAI:
                 coordR = deepcopy(self.nodeCoords[self.outputInd][j])
                 color = self.nodeColor0.lerp(self.nodeColor1, self.outputLayer[0][j])
                 width = 1
-                if self.outputLayer[0][j] >= self.fillCircleThreshold:
+                if self.outputLayer[0][j] >= self.activationThreshold:
                     width = 0
                 pygame.draw.circle(window, color, coordR, self.nodeRadius, width)
 
@@ -181,7 +184,7 @@ class AsteriodAI:
                 coordR.x -= self.nodeRadius
                 weight = self.weights[i][j]
                 color = self.weightColor0.lerp(self.weightColor1, weight)
-                if self.inputLayer[0][i] >= self.fillCircleThreshold and self.outputLayer[0][j] >= self.fillCircleThreshold:
+                if self.inputLayer[0][i] >= self.activationThreshold and self.outputLayer[0][j] >= self.activationThreshold:
                     color = self.weightColor0.lerp(self.nodeColor1, weight)
                 pygame.draw.line(window, color, coordL, coordR)
 

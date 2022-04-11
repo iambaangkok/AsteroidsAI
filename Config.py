@@ -22,6 +22,8 @@ frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)
 
 
+debug_player_neuralcontrol = False
+debug_player_manualcontrol = False
 debug_player_invincible = False
 debug_player_hitbox_show = False
 

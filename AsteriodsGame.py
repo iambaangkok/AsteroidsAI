@@ -69,13 +69,12 @@ class AsteriodsGame:
     def quit(self):
         pygame.quit()
 
-    def update(self, _dt):
-
+    def update(self, _dt, inputs = []):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.gameState = 0
 
-        self.player.update(_dt)
+        self.player.update(_dt, inputs)
 
         self.astManager.update(_dt)
         self.bulletsManager.update(_dt)

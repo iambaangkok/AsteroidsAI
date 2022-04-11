@@ -10,8 +10,13 @@ def normalize(x, minX = 0, maxX = 1):
 def flip(x, minX = 0, maxX = 1):
     return clamp((maxX-minX)-x + minX, 0, 1)
 
+def getYCircleEquation(x,r,x0,y0):
+    ansY1 = y0 + math.sqrt( r*r - x*x - x0*x0 + 2*x*x0 )
+    ansY2 = y0 - math.sqrt( r*r - x*x - x0*x0 + 2*x*x0 )
+    return ansY1, ansY2
+
 def getLineCircleIntersectionPoint(A,B,C,m,x0,y0,r):
-    # find circle equation (x-x3)^2 + (y-y3)^2 = r^2
+    # find circle equation (x-x3)^2 + (y-y3)^2 = r^2 -> y = sqrt( r*r - x*x - x3*x3 + 2xx3 ) + y3
     # substitude with linear eq y = mx + C
     # (x-x3)^2 + (mx + C -y3)^2 = r^2
     # x^2 - 2xx3 + x3^2 + m^2x^2 + 2mx(C-y3) + (C-y3)^2 = r^2
