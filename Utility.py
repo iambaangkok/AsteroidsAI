@@ -1,5 +1,8 @@
-
+import numpy as np
 import math
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 def getLineCircleIntersectionPoint(A,B,C,m,x0,y0,r):
     # find circle equation (x-x3)^2 + (y-y3)^2 = r^2

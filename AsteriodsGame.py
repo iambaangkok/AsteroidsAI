@@ -13,7 +13,8 @@ from ScoreManager import ScoreManager
 
 class AsteriodsGame:
     
-    def __init__(self):
+    def __init__(self, astAI):
+        self.astAI = astAI
         self.setup()
 
     def setup(self):
@@ -22,7 +23,6 @@ class AsteriodsGame:
         self.clock = pygame.time.Clock()
 
         self.gameWindow = Rect(Config.game_x, Config.game_y, Config.game_width, Config.game_height)
-
 
         self.player = Player(self)
         self.scoreManager = ScoreManager(self)
@@ -40,7 +40,7 @@ class AsteriodsGame:
         self.setup()
         while(self.gameState != 0):
             keys=pygame.key.get_pressed()
-            if keys[pygame.K_r] and keys[pygame.K_LCTRL]:
+            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
                 self.setup()
 
             #####
@@ -51,9 +51,22 @@ class AsteriodsGame:
 
             self.update(_dt)
             self.draw()    
-
-            
                     
+        pygame.quit()
+
+    def runOneFrame(self): # run 1 frame
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
+            self.setup()
+
+        #####
+
+        _dt = Config.frame_time_millis
+
+        self.update(_dt)
+        self.draw()    
+
+    def quit(self):
         pygame.quit()
 
     def update(self, _dt):
@@ -69,7 +82,7 @@ class AsteriodsGame:
 
         self.scoreManager.update(_dt)
 
-    def draw(self):
+    def draw(self, updateDisplay = True):
         self.window.fill(Colors.BLACK)
         
         # game elements
@@ -91,7 +104,8 @@ class AsteriodsGame:
         
         self.scoreManager.draw(self.window)
 
-        pygame.display.update()
+        if updateDisplay:
+            pygame.display.update()
 
 
 
