@@ -24,7 +24,9 @@ class AsteriodAI:
 
         self.window = self.game.window
 
-        ##### 
+        ##### Genetic Algorithm
+
+        self.generation = 1
 
         self.simulationTime = 20 # x seconds
         self.frameLimit = self.simulationTime * Config.frame_rate
@@ -65,6 +67,13 @@ class AsteriodAI:
 
         ##### User interface
 
+        self.infopanelRect = Rect(Config.infopanel_left, Config.infopanel_top, Config.infopanel_width, Config.infopanel_height)
+
+        self.textGeneration = TextObject('generation: ' + str(self.generation),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"
+                                )        
+
         self.textFrameCount = TextObject('simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit),
                                     Config.game_left + 10, Config.game_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
@@ -81,35 +90,49 @@ class AsteriodAI:
 
         self.outputLayer = np.array( sigmoid(np.dot(self.inputLayer, self.synaptic_weights)) )
 
-    
     def run(self):
         while(self.game.gameState != 0):
+
+            keys=pygame.key.get_pressed()
+            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
+                self.game.setup()
+                self.frameCount = 0
+            
+            # genetic algorithm
             self.frameCount += 1
             if(self.frameCount >= self.frameLimit):
                 self.game.setup()
                 self.frameCount = 0
-            
+                self.generation += 1
 
+            # neural network
             self.computeOutput()
             print(self.outputLayer)
             
+            # game step
             _dt = Config.frame_time_millis
             self.game.update(_dt)
             self.game.draw(False)
 
-            self.textFrameCount.text = 'simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
-            
-            # draw ui
-            
-            self.draw(self.window)
+            # user interface
+            self.updateUI()
+            self.drawUI(self.window)
 
             pygame.time.wait(Config.frame_time_millis)
 
         pygame.quit()
 
+    def updateUI(self):
+        self.textGeneration.text = 'generation: ' + str(self.generation)
+        self.textFrameCount.text = 'simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
+        
 
-    def draw(self, window):
+    def drawUI(self, window):
+        self.textGeneration.draw(window)
         self.textFrameCount.draw(window)
+
+        pygame.draw.rect(self.window, Colors.WHITE_52, self.infopanelRect, 1)
+
         pygame.display.update()
 
 

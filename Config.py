@@ -9,6 +9,14 @@ game_right = game_x + game_width
 game_top = game_y
 game_bottom = game_y + game_height
 
+infopanel_left = 60
+infopanel_right = game_x - 20
+infopanel_top = game_top
+infopanel_bottom = game_bottom
+
+infopanel_width = infopanel_right - infopanel_left
+infopanel_height = game_height
+
 frame_rate = 60
 frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)
