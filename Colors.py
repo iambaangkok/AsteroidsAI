@@ -12,6 +12,8 @@ BLACK = pygame.Color(0,0,0)
 
 RED = pygame.Color(255,0,0)
 MAGENTA = pygame.Color(255,0,255)
+BLUE = pygame.Color(0,0,255)
+GREEN = pygame.Color(0,255,0)
 GREEN_JUNGLE = pygame.Color(38,194,129)
 YELLOW = pygame.Color(255,255,0)
 YELLOW_DIRT = pygame.Color(216,145,0)

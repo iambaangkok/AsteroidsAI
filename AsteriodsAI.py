@@ -1,4 +1,4 @@
-from this import d
+from copy import deepcopy
 import numpy as np
 import pygame
 from pygame import Vector2
@@ -7,7 +7,7 @@ from pygame import Rect
 import Colors
 import Config
 from TextObject import TextObject
-from Utility import sigmoid
+from Utility import flip, normalize, sigmoid
 from AsteriodsGame import AsteriodsGame
 
 
@@ -20,7 +20,6 @@ class AsteriodAI:
         self.game = AsteriodsGame(self)
         self.player = self.game.player
         self.raycaster = self.game.raycaster
-
 
         self.window = self.game.window
 
@@ -50,14 +49,14 @@ class AsteriodAI:
         self.nodes = np.array([
             self.inputLayer,
             self.outputLayer
-        ])
+        ], dtype="object")
 
         np.random.seed(1)
 
-        self.synaptic_weights = 2 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[self.outputInd])))
+        self.weights = 1 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[self.outputInd])))
 
         print('Random starting weights: ')
-        print(self.synaptic_weights)
+        print(self.weights)
 
         self.computeOutput()
         print('Inputs: ')
@@ -67,6 +66,29 @@ class AsteriodAI:
 
         ##### User interface
 
+        # nodes
+        self.nodepanelX = Config.infopanel_left+10
+        self.nodePanelRight = Config.infopanel_right-10
+        self.nodepanelY = 200
+        self.nodeRadius = 8
+        self.layerGap = 100
+        self.nodeGap = 6
+        self.nodeColor0 = Colors.WHITE
+        self.nodeColor1 = Colors.GREEN
+        self.weightColor0 = Colors.WHITE_85
+        self.weightColor1 = Colors.BLUE
+
+        self.fillCircleThreshold = 0.8
+
+        self.nodeCoords = [[], []]
+
+        for i in range(len(self.nodes[self.inputInd][0])):
+            self.nodeCoords[self.inputInd].append(Vector2(self.nodepanelX + self.nodeRadius*(1), self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
+        
+        for i in range(len(self.nodes[self.outputInd])):
+            self.nodeCoords[self.outputInd].append(Vector2(self.nodePanelRight - self.nodeRadius*(1), 120+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
+        
+        # user interface
         self.infopanelRect = Rect(Config.infopanel_left, Config.infopanel_top, Config.infopanel_width, Config.infopanel_height)
 
         self.textGeneration = TextObject('generation: ' + str(self.generation),
@@ -83,12 +105,12 @@ class AsteriodAI:
         # get input
         self.inputLayer = [[]]
         for i in range(0, len(self.raycaster.distance)):
-            self.inputLayer[0].append(self.raycaster.distance[i] )
-        self.inputLayer[0].append(self.player.rotation)
+            self.inputLayer[0].append(flip(normalize(self.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
+        self.inputLayer[0].append(normalize(self.player.rotation, 0, 360))
 
         self.inputLayer = np.array(self.inputLayer)
 
-        self.outputLayer = np.array( sigmoid(np.dot(self.inputLayer, self.synaptic_weights)) )
+        self.outputLayer = np.array( sigmoid(np.dot(self.inputLayer, self.weights)) )
 
     def run(self):
         while(self.game.gameState != 0):
@@ -96,18 +118,21 @@ class AsteriodAI:
             keys=pygame.key.get_pressed()
             if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
                 self.game.setup()
+                self.player = self.game.player
+                self.raycaster = self.game.raycaster
                 self.frameCount = 0
             
             # genetic algorithm
             self.frameCount += 1
             if(self.frameCount >= self.frameLimit):
                 self.game.setup()
+                self.player = self.game.player
+                self.raycaster = self.game.raycaster
                 self.frameCount = 0
                 self.generation += 1
 
             # neural network
             self.computeOutput()
-            print(self.outputLayer)
             
             # game step
             _dt = Config.frame_time_millis
@@ -128,6 +153,42 @@ class AsteriodAI:
         
 
     def drawUI(self, window):
+
+        # nodes & weights
+        for i in range(0, len(self.inputLayer[0])):
+            # node
+            coordL = deepcopy(self.nodeCoords[self.inputInd][i])
+            color = self.nodeColor0.lerp(self.nodeColor1, self.inputLayer[0][i])
+            width = 1
+            if self.inputLayer[0][i] >= self.fillCircleThreshold:
+                width = 0
+            pygame.draw.circle(window, color, coordL, self.nodeRadius, width)
+
+            # weight
+            coordL.x += self.nodeRadius
+
+            for j in range(0, len(self.outputLayer[0])):
+                # node
+                coordR = deepcopy(self.nodeCoords[self.outputInd][j])
+                color = self.nodeColor0.lerp(self.nodeColor1, self.outputLayer[0][j])
+                width = 1
+                if self.outputLayer[0][j] >= self.fillCircleThreshold:
+                    width = 0
+                pygame.draw.circle(window, color, coordR, self.nodeRadius, width)
+
+                # weight
+                
+                coordR.x -= self.nodeRadius
+                weight = self.weights[i][j]
+                color = self.weightColor0.lerp(self.weightColor1, weight)
+                if self.inputLayer[0][i] >= self.fillCircleThreshold and self.outputLayer[0][j] >= self.fillCircleThreshold:
+                    color = self.weightColor0.lerp(self.nodeColor1, weight)
+                pygame.draw.line(window, color, coordL, coordR)
+
+                
+
+        # info panel
+
         self.textGeneration.draw(window)
         self.textFrameCount.draw(window)
 

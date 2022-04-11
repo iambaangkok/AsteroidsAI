@@ -4,6 +4,12 @@ import math
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+def normalize(x, minX = 0, maxX = 1):
+    return clamp((x-minX)/(maxX-minX), 0, 1)
+
+def flip(x, minX = 0, maxX = 1):
+    return clamp((maxX-minX)-x + minX, 0, 1)
+
 def getLineCircleIntersectionPoint(A,B,C,m,x0,y0,r):
     # find circle equation (x-x3)^2 + (y-y3)^2 = r^2
     # substitude with linear eq y = mx + C

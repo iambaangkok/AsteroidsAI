@@ -30,7 +30,7 @@ class ScoreManager:
             self.score += self.scorePerAsteriod
 
     def draw(self, window):
-        text = self.font.render('score ' + str(math.floor(self.score)), True, Colors.WHITE)
+        text = self.font.render('score: ' + str(math.floor(self.score)), True, Colors.WHITE)
         text_rect = text.get_rect()
         text_rect.right = self.x
         text_rect.top = self.y
