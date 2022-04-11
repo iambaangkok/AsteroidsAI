@@ -76,8 +76,8 @@ class Player:
         
         if(self.rotation >= 360):
             self.rotation -= 360
-        if(self.rotation <= -360):
-            self.rotation += 360
+        if(self.rotation < -0):
+            self.rotation = 360 - abs(self.rotation)
 
         # movement
         if keys[pygame.K_w]:
