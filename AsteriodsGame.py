@@ -11,10 +11,6 @@ from Raycaster import Raycaster
 from ScoreManager import ScoreManager
 
 
-def main():
-    game = AsteriodsGame()
-    game.run()
-
 class AsteriodsGame:
     
     def __init__(self):
@@ -101,9 +97,3 @@ class AsteriodsGame:
 
 
 
-###########################
-
-if __name__ == "__main__":
-    main()
-
-###########################
