@@ -41,7 +41,7 @@ class AsteriodAI:
         self.inputLayer = [[]]
         for i in range(0, len(self.raycaster.distance)):
             self.inputLayer[0].append(self.raycaster.distance[i] )
-        self.inputLayer[0].append(self.player.rotation)
+        # self.inputLayer[0].append(self.player.rotation)
         self.inputLayer = np.array(self.inputLayer)
         
         self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
@@ -106,7 +106,7 @@ class AsteriodAI:
         self.inputLayer = [[]]
         for i in range(0, len(self.raycaster.distance)):
             self.inputLayer[0].append(flip(normalize(self.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
-        self.inputLayer[0].append(normalize(self.player.rotation, 0, 360))
+        # self.inputLayer[0].append(normalize(self.player.rotation, 0, 360))
 
         self.inputLayer = np.array(self.inputLayer)
 

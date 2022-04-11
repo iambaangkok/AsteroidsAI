@@ -110,7 +110,7 @@ class Raycaster:
             if Config.debug_ray_show:
                 pygame.draw.line(window, color, startPoint, endPoint)
                 if Config.debug_ray_tip_show:
-                    pygame.draw.circle(window, self.circleColor, endPoint, 8, 1)
+                    pygame.draw.circle(window, self.circleColor, endPoint, 4, 1)
                 if Config.debug_ray_distance_show:
                     text = self.font.render(str(math.floor(self.distance[i])), True, self.distanceColor)
                     text_rect = text.get_rect()
