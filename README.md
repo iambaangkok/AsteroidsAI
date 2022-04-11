@@ -11,13 +11,11 @@ So it was 2022's summer break and I was bored. I have decided to start pursueing
 ## Neurons
 * Inputs:
     * Distance to closest asteriod in 16 directions
-    * Rotation in degrees of the ship
-    * Position (does this matter?)
 * Outputs:
     * Left/A - Rotate counter-clockwise
     * Right/D - Rotate clockwise
     * Space - Shoot
-    * Up/W - Thrust forward (?)
+    * Up/W - Thrust forward
 
 
 ## Notes

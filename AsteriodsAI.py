@@ -27,6 +27,7 @@ class AsteriodAI:
         ##### Genetic Algorithm
 
         self.generation = 1
+        self.bestScore = 0
 
         self.simulationTime = 20 # x seconds
         self.frameLimit = self.simulationTime * Config.frame_rate
@@ -95,12 +96,17 @@ class AsteriodAI:
         self.textGeneration = TextObject('generation: ' + str(self.generation),
                                     Config.infopanel_left + 10, Config.infopanel_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
-                                )        
+                                )
+        
+        self.textBestScore = TextObject('best score: ' + str(self.bestScore),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 26, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"
+                                )
 
         self.textFrameCount = TextObject('simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit),
                                     Config.game_left + 10, Config.game_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
-                                )        
+                                )
 
     def computeOutput(self):
         # get input
@@ -126,6 +132,7 @@ class AsteriodAI:
             # genetic algorithm
             self.frameCount += 1*Config.speedmultiplier
             if(self.frameCount >= self.frameLimit or not self.player.isAlive):
+                self.bestScore = max(self.bestScore, math.floor(self.game.scoreManager.score))
                 self.game.setup()
                 self.player = self.game.player
                 self.raycaster = self.game.raycaster
@@ -140,8 +147,6 @@ class AsteriodAI:
             
             # game step
             _dt = self.game.clock.tick(Config.frame_rate)*Config.speedmultiplier
-            if(_dt < Config.frame_time_millis/Config.speedmultiplier):
-                pygame.time.wait(Config.frame_time_millis/Config.speedmultiplier - _dt)
             self.game.update(_dt, inputs)
             self.game.draw(False)
 
@@ -154,6 +159,7 @@ class AsteriodAI:
         pygame.quit()
 
     def updateUI(self):
+        self.textBestScore.text = 'best score: ' + str(self.bestScore)
         self.textGeneration.text = 'generation: ' + str(self.generation)
         self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
         
@@ -183,7 +189,6 @@ class AsteriodAI:
                 pygame.draw.circle(window, color, coordR, self.nodeRadius, width)
 
                 # weight
-                
                 coordR.x -= self.nodeRadius
                 weight = self.weights[i][j]
                 color = self.weightColor0.lerp(self.weightColor1, weight)
@@ -195,6 +200,7 @@ class AsteriodAI:
 
         # info panel
 
+        self.textBestScore.draw(window)
         self.textGeneration.draw(window)
         self.textFrameCount.draw(window)
 

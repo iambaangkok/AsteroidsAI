@@ -30,7 +30,7 @@ class Bullet:
         self.x = self.player.x
         self.y = self.player.y
         self.moveSpeed = Vector2(0,0)
-        self.moveSpeedMax = 0.5
+        self.moveSpeedMax = 0.7
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
         
