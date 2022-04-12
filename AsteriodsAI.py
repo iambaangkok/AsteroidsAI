@@ -4,9 +4,11 @@ import numpy as np
 import pygame
 from pygame import Vector2
 from pygame import Rect
+from AsteriodManager import AsteriodManager
 
 import Colors
 import Config
+from NeuralNetwork import NeuralNetwork
 from TextObject import TextObject
 from Utility import flip, normalize, sigmoid
 from AsteriodsGame import AsteriodsGame
@@ -18,13 +20,21 @@ def main():
 
 class AsteriodAI:
     def __init__(self):
-        self.game = AsteriodsGame(self)
-        self.player = self.game.player
-        self.raycaster = self.game.raycaster
+        np.random.seed(1)
 
-        self.window = self.game.window
+        self.simulatorState = 1
 
         ##### Genetic Algorithm
+
+        self.agentPerGeneration = 5
+
+        self.games = []
+        for i in range(0, self.agentPerGeneration):
+            self.games.append(AsteriodsGame(self))
+            if i != 0:
+                (self.games[i]).astManager.asteriods = deepcopy((self.games[0]).astManager.asteriods)
+
+        # self.astManager = AsteriodManager()
 
         self.generation = 1
         self.bestScore = 0
@@ -35,61 +45,13 @@ class AsteriodAI:
 
         ##### Neural Network
 
-        self.nLayers = 2 # only input and output
+        self.neuralNetworks = []
+        for i in range(0, self.agentPerGeneration):
+            self.neuralNetworks.append(NeuralNetwork(self.games[i]))
         
-        self.inputInd = 0
-        self.outputInd = self.nLayers-1
-        
-        self.inputLayer = [[]]
-        for i in range(0, len(self.raycaster.distance)):
-            self.inputLayer[0].append(self.raycaster.distance[i] )
-        # self.inputLayer[0].append(self.player.rotation)
-        self.inputLayer = np.array(self.inputLayer)
-        
-        self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
+        self.bestNeuralNetwork = self.neuralNetworks[0]
+        self.bestGame = self.bestNeuralNetwork.game
 
-        self.nodes = np.array([
-            self.inputLayer,
-            self.outputLayer
-        ], dtype="object")
-
-        np.random.seed(1)
-
-        self.weights = 1 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[self.outputInd])))
-
-        print('Random starting weights: ')
-        print(self.weights)
-
-        self.computeOutput()
-        print('Inputs: ')
-        print(self.inputLayer)
-        print('Outputs: ')
-        print(self.outputLayer)
-
-        ##### User interface
-
-        # nodes
-        self.nodepanelX = Config.infopanel_left+10
-        self.nodePanelRight = Config.infopanel_right-10
-        self.nodepanelY = 200
-        self.nodeRadius = 8
-        self.layerGap = 100
-        self.nodeGap = 6
-        self.nodeColor0 = Colors.WHITE
-        self.nodeColor1 = Colors.GREEN
-        self.weightColor0 = Colors.WHITE_85
-        self.weightColor1 = Colors.BLUE
-
-        self.activationThreshold = 0.8
-
-        self.nodeCoords = [[], []]
-
-        for i in range(len(self.nodes[self.inputInd][0])):
-            self.nodeCoords[self.inputInd].append(Vector2(self.nodepanelX + self.nodeRadius*(1), self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
-        
-        for i in range(len(self.nodes[self.outputInd])):
-            self.nodeCoords[self.outputInd].append(Vector2(self.nodePanelRight - self.nodeRadius*(1), 120+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
-        
         # user interface
         self.infopanelRect = Rect(Config.infopanel_left, Config.infopanel_top, Config.infopanel_width, Config.infopanel_height)
 
@@ -108,55 +70,97 @@ class AsteriodAI:
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
 
-    def computeOutput(self):
-        # get input
-        self.inputLayer = [[]]
-        for i in range(0, len(self.raycaster.distance)):
-            self.inputLayer[0].append(flip(normalize(self.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
-        # self.inputLayer[0].append(normalize(self.player.rotation, 0, 360))
 
-        self.inputLayer = np.array(self.inputLayer)
-
-        self.outputLayer = np.array( sigmoid(np.dot(self.inputLayer, self.weights)) )
 
     def run(self):
-        while(self.game.gameState != 0):
-
+        while(self.simulatorState != 0):
             keys=pygame.key.get_pressed()
-            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
-                self.game.setup()
-                self.player = self.game.player
-                self.raycaster = self.game.raycaster
-                self.frameCount = 0
             
-            # genetic algorithm
+            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
+                for i in range(0, self.agentPerGeneration):
+                    game = self.games[i]
+                    game.setup()
+                self.frameCount = 0
+
+            if keys[pygame.K_q] and keys[pygame.K_LCTRL]: # quit
+                self.simulatorState = 0
+
+            ##### GOING TO NEXT GENERATION CHECK
             self.frameCount += 1*Config.speedmultiplier
-            if(self.frameCount >= self.frameLimit or not self.player.isAlive):
-                self.bestScore = max(self.bestScore, math.floor(self.game.scoreManager.score))
-                self.game.setup()
-                self.player = self.game.player
-                self.raycaster = self.game.raycaster
+            isAlive = 0
+            for i in range(0, self.agentPerGeneration):
+                if self.games[i].player.isAlive:
+                    isAlive += 1
+
+            if(self.frameCount >= self.frameLimit or isAlive <= 0):
+                for i in range(0, self.agentPerGeneration):
+                    self.checkBestScore(i)     
+                    game = self.games[i]
+                    game.setup()
                 self.frameCount = 0
                 self.generation += 1
 
-            # neural network
-            self.computeOutput()
-            inputs = []
-            for i in range(0, len(self.outputLayer[0])):
-                inputs.append(self.outputLayer[0][i] > self.activationThreshold)
-            
-            # game step
-            _dt = self.game.clock.tick(Config.frame_rate)*Config.speedmultiplier
-            self.game.update(_dt, inputs)
-            self.game.draw(False)
+            ##### UPDATE
+
+            for i in range(0, self.agentPerGeneration):
+                game = self.games[i]
+                neural = self.neuralNetworks[i]                
+
+                # neural network
+                neural.computeOutput()
+                inputs = []
+                for i in range(0, len(neural.outputLayer[0])):
+                    inputs.append(neural.outputLayer[0][i] > neural.activationThreshold)
+                
+                # game step
+                _dt = game.clock.tick(Config.frame_rate)*Config.speedmultiplier
+                game.update(_dt, inputs)
+
+            ##### DRAW
+
+            # draw black bg
+            self.bestGame.window.fill(Colors.BLACK)
+
+            for i in range(0, self.agentPerGeneration): # game draw
+                game = self.games[i]
+                updateDisplay = False
+                drawRay = False
+                drawPlayer = True
+                drawAsteriods = True
+                drawBullets = False
+                drawCoverUp = False
+                drawWindowBorder = False
+                drawScore = False
+                drawBg = False
+                game.player.playerWidth = 1
+                game.astManager.circleColor = Colors.WHITE_153
+
+                if game == self.bestGame: # best game
+                    drawRay = True
+                    drawAsteriods = True
+                    drawBullets = True
+                    drawScore = True
+                    game.player.playerWidth = 0
+                    game.astManager.circleColor = Colors.YELLOW_DIRT
+
+                if i == self.agentPerGeneration-1: # last game
+                    drawCoverUp = True
+                    drawWindowBorder = True
+
+                game.draw(updateDisplay,drawRay,drawPlayer,drawAsteriods
+                ,drawBullets,drawCoverUp,drawWindowBorder,drawScore,drawBg )
 
             # user interface
             self.updateUI()
-            self.drawUI(self.window)
-
-            #pygame.time.wait(math.floor(Config.frame_time_millis/Config.speedmultiplier))
+            self.drawUI(self.bestGame.window)
 
         pygame.quit()
+
+    def checkBestScore(self, i):
+        if math.floor(self.games[i].scoreManager.score) > self.bestScore:
+            self.bestScore = math.floor(self.games[i].scoreManager.score)
+            self.bestNeuralNetwork = self.neuralNetworks[i]
+            self.bestGame = self.games[i]
 
     def updateUI(self):
         self.textBestScore.text = 'best score: ' + str(self.bestScore)
@@ -165,35 +169,37 @@ class AsteriodAI:
         
 
     def drawUI(self, window):
+        
+        neural = self.bestNeuralNetwork
 
         # nodes & weights
-        for i in range(0, len(self.inputLayer[0])):
+        for i in range(0, len(neural.inputLayer[0])):
             # node
-            coordL = deepcopy(self.nodeCoords[self.inputInd][i])
-            color = self.nodeColor0.lerp(self.nodeColor1, self.inputLayer[0][i])
+            coordL = deepcopy(neural.nodeCoords[neural.inputInd][i])
+            color = neural.nodeColor0.lerp(neural.nodeColor1, neural.inputLayer[0][i])
             width = 1
-            if self.inputLayer[0][i] >= self.activationThreshold:
+            if neural.inputLayer[0][i] >= neural.activationThreshold:
                 width = 0
-            pygame.draw.circle(window, color, coordL, self.nodeRadius, width)
+            pygame.draw.circle(window, color, coordL, neural.nodeRadius, width)
 
             # weight
-            coordL.x += self.nodeRadius
+            coordL.x += neural.nodeRadius
 
-            for j in range(0, len(self.outputLayer[0])):
+            for j in range(0, len(neural.outputLayer[0])):
                 # node
-                coordR = deepcopy(self.nodeCoords[self.outputInd][j])
-                color = self.nodeColor0.lerp(self.nodeColor1, self.outputLayer[0][j])
+                coordR = deepcopy(neural.nodeCoords[neural.outputInd][j])
+                color = neural.nodeColor0.lerp(neural.nodeColor1, neural.outputLayer[0][j])
                 width = 1
-                if self.outputLayer[0][j] >= self.activationThreshold:
+                if neural.outputLayer[0][j] >= neural.activationThreshold:
                     width = 0
-                pygame.draw.circle(window, color, coordR, self.nodeRadius, width)
+                pygame.draw.circle(window, color, coordR, neural.nodeRadius, width)
 
                 # weight
-                coordR.x -= self.nodeRadius
-                weight = self.weights[i][j]
-                color = self.weightColor0.lerp(self.weightColor1, weight)
-                if self.inputLayer[0][i] >= self.activationThreshold and self.outputLayer[0][j] >= self.activationThreshold:
-                    color = self.weightColor0.lerp(self.nodeColor1, weight)
+                coordR.x -= neural.nodeRadius
+                weight = neural.weights[i][j]
+                color = neural.weightColor0.lerp(neural.weightColor1, weight)
+                if neural.inputLayer[0][i] >= neural.activationThreshold and neural.outputLayer[0][j] >= neural.activationThreshold:
+                    color = neural.weightColor0.lerp(neural.nodeColor1, weight)
                 pygame.draw.line(window, color, coordL, coordR)
 
                 
@@ -204,7 +210,7 @@ class AsteriodAI:
         self.textGeneration.draw(window)
         self.textFrameCount.draw(window)
 
-        pygame.draw.rect(self.window, Colors.WHITE_52, self.infopanelRect, 1)
+        pygame.draw.rect(self.bestGame.window, Colors.WHITE_52, self.infopanelRect, 1)
 
         pygame.display.update()
 

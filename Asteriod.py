@@ -14,7 +14,7 @@ class Asteriod:
 
     def __init__(self):
         self.circleRadius = 8
-        self.scale = 4
+        self.scale = 3
 
         self.circleColor = Colors.YELLOW_DIRT
 
@@ -23,13 +23,16 @@ class Asteriod:
         self.x = Config.screen_width/2
         self.y = Config.screen_height/2
         self.moveSpeed = Vector2(0,0)
-        self.moveSpeedMax = 0.4
+        self.moveSpeedMax = 0.025
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
         
         self.markedForDelete = False
-        #####
 
+        self.calculateMoveSpeed()
+
+
+    def randomSelf(self):
         self.scale = random.random() * 3 + 3
         self.rotation = random.randint(0, 360)
         self.moveSpeedMax = random.random() * 0.075 + 0.025
@@ -46,8 +49,11 @@ class Asteriod:
         else: #left spawn
             self.x = Config.game_left+1
             self.y = random.randint(Config.game_left+1,Config.game_right-1)
+        
+        self.calculateMoveSpeed()
             
         
+    def calculateMoveSpeed(self):
         forward = Vector2(0,1).rotate(self.rotation).normalize()
         self.moveSpeed.x = forward.x * self.moveSpeedMax
         self.moveSpeed.y = forward.y * self.moveSpeedMax

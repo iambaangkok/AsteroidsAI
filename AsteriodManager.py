@@ -1,21 +1,26 @@
+import random
 import pygame
 from pygame import Vector2
 
+import Config
+import Colors
 from Asteriod import Asteriod
 from Utility import checkCollisionCircle
 
 class AsteriodManager:
 
-
-    spawnRate = 0.75 # x per second
-    spawnInterval = 1/spawnRate
-    spawnIntervalCounter = spawnInterval #0
-    limit = 10 # no more than x asteriods on screen at same time
-
     def __init__(self, game):
         self.game = game
         self.player = game.player
         self.scoreManager = game.scoreManager
+
+        self.circleColor = Colors.YELLOW_DIRT
+
+        self.spawnRate = 0.75 # x per second
+        self.spawnInterval = 1/self.spawnRate
+        self.spawnIntervalCounter = self.spawnInterval #0
+        self.limit = 10 # no more than x asteriods on screen at same time
+
         self.asteriods = []
 
     def update(self, _dt):
@@ -50,5 +55,7 @@ class AsteriodManager:
             self.asteriods[i].draw(window)
 
     def spawn(self):
-        asteriod = Asteriod()
-        self.asteriods.append(asteriod)
+        ast = Asteriod()
+        self.asteriods.append(ast)
+        ast.circleColor = self.circleColor
+        ast.randomSelf()

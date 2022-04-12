@@ -24,6 +24,8 @@ class Player:
         self.polygonColor = Colors.GREEN_JUNGLE
         self.circleColor = Colors.MAGENTA
 
+        self.playerWidth = 0
+
         self.rotation = 180
         self.angularSpeed = 0
         self.angularSpeedMax = 0.4
@@ -128,7 +130,7 @@ class Player:
         self.game.bulletsManager.shoot()
 
     def draw(self, window):
-        pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), 0)
+        pygame.draw.polygon(window, self.polygonColor, self.getPolygon(), self.playerWidth)
         if Config.debug_player_hitbox_show:
             self.drawHitBox(window)
 

@@ -54,18 +54,6 @@ class AsteriodsGame:
                     
         pygame.quit()
 
-    def runOneFrame(self): # run 1 frame
-        keys=pygame.key.get_pressed()
-        if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
-            self.setup()
-
-        #####
-
-        _dt = Config.frame_time_millis
-
-        self.update(_dt)
-        self.draw()    
-
     def quit(self):
         pygame.quit()
 
@@ -73,6 +61,7 @@ class AsteriodsGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.gameState = 0
+                self.astAI.simulationState = 0
 
         self.player.update(_dt, inputs)
 
@@ -81,27 +70,40 @@ class AsteriodsGame:
 
         self.scoreManager.update(_dt)
 
-    def draw(self, updateDisplay = True):
-        self.window.fill(Colors.BLACK)
+    def draw(self, updateDisplay = True, drawRay = True, drawPlayer = True, drawAsteriods = True,
+        drawBullets = True, drawCoverUp = True, drawWindowBorder = True, drawScore = True,
+        drawBg = True
+        ):
+
+        if Config.game_draw_bg and drawBg:
+            self.window.fill(Colors.BLACK)
         
         # game elements
-        self.raycaster.draw(self.window)
+        if drawRay:
+            self.raycaster.draw(self.window)
 
-        self.player.draw(self.window)
+        if drawPlayer:
+            self.player.draw(self.window)
         
-        self.astManager.draw(self.window)
-        self.bulletsManager.draw(self.window)
+        if drawAsteriods:
+            self.astManager.draw(self.window)
+
+        if drawBullets:
+            self.bulletsManager.draw(self.window)
 
         # cover up
-        pygame.draw.rect(self.window, Colors.BLACK, Rect(0, 0, Config.game_x, Config.screen_height))
-        pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_x, 0, Config.game_width, Config.game_y))
-        pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_right, 0, Config.screen_width-Config.game_right, Config.screen_height))
-        pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_x, Config.game_bottom, Config.game_width, Config.screen_height-Config.game_height))
+        if drawCoverUp:
+            pygame.draw.rect(self.window, Colors.BLACK, Rect(0, 0, Config.game_x, Config.screen_height))
+            pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_x, 0, Config.game_width, Config.game_y))
+            pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_right, 0, Config.screen_width-Config.game_right, Config.screen_height))
+            pygame.draw.rect(self.window, Colors.BLACK, Rect(Config.game_x, Config.game_bottom, Config.game_width, Config.screen_height-Config.game_height))
 
         # game window border
-        pygame.draw.rect(self.window, Colors.WHITE, self.gameWindow, 1)
+        if drawWindowBorder:
+            pygame.draw.rect(self.window, Colors.WHITE, self.gameWindow, 1)
         
-        self.scoreManager.draw(self.window)
+        if drawScore:
+            self.scoreManager.draw(self.window)
 
         if updateDisplay:
             pygame.display.update()
