@@ -14,10 +14,10 @@ class AsteriodManager:
 
         self.circleColor = Colors.YELLOW_DIRT
 
-        self.spawnRate = 0.75 # x per second
+        self.spawnRate = 4 # x per second
         self.spawnInterval = 1/self.spawnRate
         self.spawnIntervalCounter = self.spawnInterval #0
-        self.limit = 10 # no more than x asteriods on screen at same time
+        self.limit = 40 # no more than x asteriods on screen at same time
 
         self.asteriods = []
 
@@ -51,9 +51,11 @@ class AsteriodManager:
                 newAsteriods.append(ast)
         self.asteriods = newAsteriods
 
-    def draw(self, window):
+    def draw(self, window, gameId):
         for i in range(len(self.asteriods)):
-            self.asteriods[i].draw(window)
+            ast = self.asteriods[i]
+            if not ast.hasCollided[gameId]:
+                ast.draw(window)
 
     def spawn(self):
         ast = Asteriod()

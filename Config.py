@@ -9,9 +9,9 @@ game_right = game_x + game_width
 game_top = game_y
 game_bottom = game_y + game_height
 
-game_draw_bg = False
+game_draw_bg = True
 
-genetic_agentpergeneration = 5
+genetic_agentpergeneration = 100
 
 infopanel_left = 60
 infopanel_right = game_x - 20

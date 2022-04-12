@@ -10,10 +10,6 @@ class NeuralNetwork:
     
     def __init__(self, game):
         self.game = game
-        self.player = self.game.player
-        self.raycaster = self.game.raycaster
-
-        self.window = self.game.window
 
         self.nLayers = 2 # only input and output
         
@@ -21,9 +17,9 @@ class NeuralNetwork:
         self.outputInd = self.nLayers-1
         
         self.inputLayer = [[]]
-        for i in range(0, len(self.raycaster.distance)):
-            self.inputLayer[0].append(self.raycaster.distance[i] )
-        # self.inputLayer[0].append(self.player.rotation)
+        for i in range(0, len(self.game.raycaster.distance)):
+            self.inputLayer[0].append(self.game.raycaster.distance[i] )
+        # self.inputLayer[0].append(self.game.player.rotation)
         self.inputLayer = np.array(self.inputLayer)
         
         self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
@@ -71,9 +67,9 @@ class NeuralNetwork:
     def computeOutput(self):
         # get input
         self.inputLayer = [[]]
-        for i in range(0, len(self.raycaster.distance)):
-            self.inputLayer[0].append(flip(normalize(self.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
-        # self.inputLayer[0].append(normalize(self.player.rotation, 0, 360))
+        for i in range(0, len(self.game.raycaster.distance)):
+            self.inputLayer[0].append(flip(normalize(self.game.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
+        # self.inputLayer[0].append(normalize(self.game.player.rotation, 0, 360))
 
         self.inputLayer = np.array(self.inputLayer)
 

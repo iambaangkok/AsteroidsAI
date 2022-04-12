@@ -1,3 +1,4 @@
+from copy import deepcopy
 import pygame
 from pygame import Vector2
 from pygame import Rect
@@ -13,16 +14,13 @@ from ScoreManager import ScoreManager
 
 class AsteriodsGame:
     
-    currentId = 0
 
     def __init__(self, astAI):
         self.astAI = astAI
-        self.id = self.currentId
-        self.currentId += 1
+        self.id = 0
         self.setup()
 
     def setup(self):
-        pygame.init()
         self.window = pygame.display.set_mode((Config.screen_width, Config.screen_height))
         self.clock = pygame.time.Clock()
 
@@ -69,7 +67,6 @@ class AsteriodsGame:
 
         self.player.update(_dt, inputs)
 
-        self.astManager.update(_dt)
         self.bulletsManager.update(_dt)
 
         self.scoreManager.update(_dt)
@@ -90,7 +87,7 @@ class AsteriodsGame:
             self.player.draw(self.window)
         
         if drawAsteriods:
-            self.astManager.draw(self.window)
+            self.astManager.draw(self.window, self.id)
 
         if drawBullets:
             self.bulletsManager.draw(self.window)
