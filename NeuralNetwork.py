@@ -28,17 +28,16 @@ class NeuralNetwork:
             self.inputLayer,
             self.outputLayer
         ], dtype="object")
+        self.weights = 2 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[self.outputInd]))) -1
 
-        self.weights = 1 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[self.outputInd])))
+        # print(self.game.id, ' Random starting weights: ')
+        # print(self.weights)
 
-        print('Random starting weights: ')
-        print(self.weights)
-
-        self.computeOutput()
-        print('Inputs: ')
-        print(self.inputLayer)
-        print('Outputs: ')
-        print(self.outputLayer)
+        # self.computeOutput()
+        # print('Inputs: ')
+        # print(self.inputLayer)
+        # print('Outputs: ')
+        # print(self.outputLayer)
 
         ##### User interface
 
@@ -52,7 +51,8 @@ class NeuralNetwork:
         self.nodeColor0 = Colors.WHITE
         self.nodeColor1 = Colors.GREEN
         self.weightColor0 = Colors.WHITE_85
-        self.weightColor1 = Colors.BLUE
+        self.weightColorPositive = Colors.BLUE
+        self.weightColorNegative = Colors.RED
 
         self.activationThreshold = 0.8
 

@@ -96,7 +96,7 @@ class AsteriodAI:
             for i in range(0, self.agentPerGeneration):
                 if self.games[i].player.isAlive:
                     isAlive += 1
-
+            # print("ALIVE: ", isAlive)
             if(self.frameCount >= self.frameLimit or isAlive <= 0):
                 self.astManager = AsteriodManager(self.games)
                 for i in range(0, self.agentPerGeneration):
@@ -214,9 +214,13 @@ class AsteriodAI:
                 # weight
                 coordR.x -= neural.nodeRadius
                 weight = neural.weights[i][j]
-                color = neural.weightColor0.lerp(neural.weightColor1, weight)
+                color = neural.weightColor0
+                if weight >= 0:
+                    color = neural.weightColor0.lerp(neural.weightColorPositive, weight)
+                else:
+                    color = neural.weightColor0.lerp(neural.weightColorNegative, -weight)
                 if neural.inputLayer[0][i] >= neural.activationThreshold and neural.outputLayer[0][j] >= neural.activationThreshold:
-                    color = neural.weightColor0.lerp(neural.nodeColor1, weight)
+                    color = neural.weightColor0.lerp(neural.nodeColor1, abs(weight))
                 pygame.draw.line(window, color, coordL, coordR)
 
                 
