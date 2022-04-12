@@ -59,16 +59,20 @@ class AsteriodAI:
                                     Config.infopanel_left + 10, Config.infopanel_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
-        self.textAgentPerGeneration = TextObject('agent per generation: ' + str(self.agentPerGeneration),
-                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*1, 
+        self.textAgentPerGeneration = TextObject('agents: ' + str(self.agentPerGeneration),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"
+                                )
+        self.textAgentAlive = TextObject('agents alive: ' + str(self.agentPerGeneration),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
         self.textBestScoreThisGeneration = TextObject('best score this generation: ' + str(self.bestScoreThisGeneration),
-                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*2, 
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"       
                                 ) 
         self.textBestScore = TextObject('best score: ' + str(self.bestScore),
-                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*3, 
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
         self.textFrameCount = TextObject('simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit),
@@ -96,6 +100,7 @@ class AsteriodAI:
             for i in range(0, self.agentPerGeneration):
                 if self.games[i].player.isAlive:
                     isAlive += 1
+            self.textAgentAlive.text = 'agents alive: ' + str(isAlive)
             # print("ALIVE: ", isAlive)
             if(self.frameCount >= self.frameLimit or isAlive <= 0):
                 self.astManager = AsteriodManager(self.games)
@@ -228,6 +233,7 @@ class AsteriodAI:
         # info panel
         self.textGeneration.draw(window)
         self.textAgentPerGeneration.draw(window)
+        self.textAgentAlive.draw(window)
         self.textBestScoreThisGeneration.draw(window)
         self.textBestScore.draw(window)
         self.textFrameCount.draw(window)

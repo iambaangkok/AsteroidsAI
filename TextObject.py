@@ -3,8 +3,12 @@ import pygame
 import Colors
 
 class TextObject:
-    
+
+    count = 0
+
     def __init__(self,text, x = 0, y = 0, fontName = "UbuntuMono", fontSize = 24, color = Colors.WHITE, align = "left", baseline = "bottom"):
+        TextObject.count += 1
+
         self.text = text
         self.font = pygame.font.SysFont(fontName, fontSize)
         self.color = color
