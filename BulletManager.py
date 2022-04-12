@@ -25,9 +25,13 @@ class BulletManager:
             for j in range(len(asteriods)):
                 ast = asteriods[j]
                 collide = checkCollisionCircle(bullet, ast)
-                if(collide):
-                    ast.markedForDelete = True
+                if collide and not ast.hasCollided[self.game.id]:
+                    ast.hasCollided[self.game.id] = True
+                    ast.markedForDelete += 1
+                    self.game.scoreManager.addScoreFromAsteriod()
+                    
                     bullet.markedForDelete = True
+                    
             
             # screen border collision
             if bullet.x < Config.game_left or bullet.x > Config.game_right or bullet.y < Config.game_top or bullet.y > Config.game_bottom:

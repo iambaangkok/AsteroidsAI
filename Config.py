@@ -11,6 +11,8 @@ game_bottom = game_y + game_height
 
 game_draw_bg = False
 
+genetic_agentpergeneration = 5
+
 infopanel_left = 60
 infopanel_right = game_x - 20
 infopanel_top = game_top
@@ -23,6 +25,8 @@ speedmultiplier = 1
 frame_rate = 60
 frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)
+
+##### DEBUG
 
 debug_player_neuralcontrol = True
 

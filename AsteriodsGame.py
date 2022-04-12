@@ -13,8 +13,12 @@ from ScoreManager import ScoreManager
 
 class AsteriodsGame:
     
+    currentId = 0
+
     def __init__(self, astAI):
         self.astAI = astAI
+        self.id = self.currentId
+        self.currentId += 1
         self.setup()
 
     def setup(self):
@@ -27,7 +31,7 @@ class AsteriodsGame:
         self.player = Player(self)
         self.scoreManager = ScoreManager(self)
 
-        self.astManager = AsteriodManager(self)
+        self.astManager = self.astAI.astManager
         self.bulletsManager = BulletManager(self)
 
         self.raycaster = Raycaster(self)

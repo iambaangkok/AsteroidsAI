@@ -9,10 +9,8 @@ from Utility import checkCollisionCircle
 
 class AsteriodManager:
 
-    def __init__(self, game):
-        self.game = game
-        self.player = game.player
-        self.scoreManager = game.scoreManager
+    def __init__(self, games = []):
+        self.games = games
 
         self.circleColor = Colors.YELLOW_DIRT
 
@@ -37,17 +35,20 @@ class AsteriodManager:
             ast = self.asteriods[i]
             ast.update(_dt)
 
-            if checkCollisionCircle(ast, self.player):
-                self.player.isAlive = False
-                ast.markedForDelete = True
+            for j in range(0, len(self.games)):
+                game = self.games[j]
+                if checkCollisionCircle(ast, game.player) and not ast.hasCollided[game.id]:
+                    ast.hasCollided[game.id] = True
+                    ast.markedForDelete += 1
+                    game.scoreManager.addScoreFromAsteriod()
+
+                    game.player.isAlive = False
 
             # delete
-            if ast.markedForDelete:
+            if ast.markedForDelete >= len(self.games):
                 del ast
-                self.scoreManager.addScoreFromAsteriod()
             else:
                 newAsteriods.append(ast)
-        
         self.asteriods = newAsteriods
 
     def draw(self, window):

@@ -26,15 +26,16 @@ class AsteriodAI:
 
         ##### Genetic Algorithm
 
-        self.agentPerGeneration = 5
+        self.agentPerGeneration = Config.genetic_agentpergeneration
 
         self.games = []
+        self.astManager = AsteriodManager(self.games)
         for i in range(0, self.agentPerGeneration):
             self.games.append(AsteriodsGame(self))
             if i != 0:
                 (self.games[i]).astManager.asteriods = deepcopy((self.games[0]).astManager.asteriods)
 
-        # self.astManager = AsteriodManager()
+        
 
         self.generation = 1
         self.bestScore = 0
@@ -133,7 +134,6 @@ class AsteriodAI:
                 drawScore = False
                 drawBg = False
                 game.player.playerWidth = 1
-                game.astManager.circleColor = Colors.WHITE_153
 
                 if game == self.bestGame: # best game
                     drawRay = True
@@ -141,7 +141,6 @@ class AsteriodAI:
                     drawBullets = True
                     drawScore = True
                     game.player.playerWidth = 0
-                    game.astManager.circleColor = Colors.YELLOW_DIRT
 
                 if i == self.agentPerGeneration-1: # last game
                     drawCoverUp = True

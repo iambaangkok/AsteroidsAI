@@ -10,8 +10,6 @@ import Colors
 
 class Asteriod:
 
-
-
     def __init__(self):
         self.circleRadius = 8
         self.scale = 3
@@ -27,7 +25,8 @@ class Asteriod:
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
         
-        self.markedForDelete = False
+        self.hasCollided = [False for i in range(0,Config.genetic_agentpergeneration)]
+        self.markedForDelete = 0
 
         self.calculateMoveSpeed()
 
