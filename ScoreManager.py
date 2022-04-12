@@ -18,7 +18,7 @@ class ScoreManager:
         self.x = Config.game_right - self.margin
         self.y = Config.game_top + self.margin
 
-        self.font = pygame.font.SysFont("UbuntuMono", 24)
+        self.font = pygame.font.SysFont("UbuntuMono", 16)
 
 
     def update(self, _dt):
