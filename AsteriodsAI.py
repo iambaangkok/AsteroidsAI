@@ -75,7 +75,7 @@ class AsteriodAI:
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
-        self.textFrameCount = TextObject('simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit),
+        self.textFrameCount = TextObject('simulation time: ' + str(self.simulationTime) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration),
                                     Config.game_left + 10, Config.game_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
@@ -152,7 +152,6 @@ class AsteriodAI:
                     drawRay = True
                     drawAsteriods = True
                     drawBullets = True
-                    drawScore = True
                     game.player.playerWidth = 0
 
                 if i == 0: # first game
@@ -187,7 +186,7 @@ class AsteriodAI:
         self.textBestScoreThisGeneration.text = 'best score this generation: ' + str(self.bestScoreThisGeneration)
         self.textBestScore.text = 'best score: ' + str(self.bestScore)
         self.textGeneration.text = 'generation: ' + str(self.generation)
-        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit)
+        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration)
         
 
     def drawUI(self, window):
