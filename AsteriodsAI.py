@@ -26,6 +26,13 @@ class AsteriodAI:
         self.simulatorState = 1
 
         ##### Genetic Algorithm
+        self.generation = 1
+        self.bestScore = 0
+        self.bestScoreThisGeneration = 0
+
+        self.simulationTime = Config.genetic_simulationtime # x seconds
+        self.frameLimit = self.simulationTime * Config.frame_rate
+        self.frameCount = 0
 
         self.agentPerGeneration = Config.genetic_agentpergeneration
 
@@ -34,15 +41,6 @@ class AsteriodAI:
         for i in range(0, self.agentPerGeneration):
             self.games.append(AsteriodsGame(self))
             self.games[i].id = i
-
-        self.generation = 1
-        self.bestScore = 0
-        self.bestScoreThisGeneration = 0
-
-        self.simulationTime = 60 # x seconds
-        self.frameLimit = self.simulationTime * Config.frame_rate
-        self.frameCount = 0
-
         ##### Neural Network
 
         self.neuralNetworks = []

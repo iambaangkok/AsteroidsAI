@@ -14,10 +14,10 @@ class AsteriodManager:
 
         self.circleColor = Colors.YELLOW_DIRT
 
-        self.spawnRate = 100 # x per second
+        self.spawnRate = 2 # x per second
         self.spawnInterval = 1/self.spawnRate
         self.spawnIntervalCounter = self.spawnInterval #0
-        self.limit = 40 # no more than x asteriods on screen at same time
+        self.limit = self.spawnRate * Config.genetic_simulationtime # no more than x asteriods on screen at same time
 
         self.asteriods = []
 
