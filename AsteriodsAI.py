@@ -137,18 +137,18 @@ class AsteriodAI:
 
     def breedNextGeneration(self):
         bNeural = self.bestNeuralNetwork
-        bWeights = bNeural.weights
-
         for n in range(0, len(self.neuralNetworks)):
             neural = self.neuralNetworks[n]
-            weights = neural.weights
-            for i in range(0, len(weights)):
-                for j in range(0, len(weights[i])):
-                    bW = bWeights[i][j]
-                    w = weights[i][j]
-                    avg = (bW+w)/2
-                    
-                    weights[i][j] = avg
+            for layer in range(0, len(neural.weights)):
+                bWeights = bNeural.weights[layer]
+                weights = neural.weights[layer]
+                for i in range(0, len(weights)):
+                    for j in range(0, len(weights[i])):
+                        bW = bWeights[i][j]
+                        w = weights[i][j]
+                        avg = (bW+w)/2
+                        
+                        weights[i][j] = avg
 
 
 
@@ -199,41 +199,47 @@ class AsteriodAI:
         
         neural = self.bestNeuralNetwork
 
-        # nodes & weights
-        for i in range(0, len(neural.inputLayer[0])):
-            # node
-            coordL = deepcopy(neural.nodeCoords[neural.inputInd][i])
-            color = neural.nodeColor0.lerp(neural.nodeColor1, neural.inputLayer[0][i])
-            width = 1
-            if neural.inputLayer[0][i] >= neural.activationThreshold:
-                width = 0
-            pygame.draw.circle(window, color, coordL, neural.nodeRadius, width)
+        for layer in range(0, len(neural.nodes)-1):
+            leftLayer = layer
+            rightLayer = layer+1
+            # print("LEFT ", leftLayer)
+            # print(neural.nodes[leftLayer])
+            # print("RIGHT ", rightLayer)
+            # print(neural.nodes[rightLayer])
 
-            # weight
-            coordL.x += neural.nodeRadius
-
-            for j in range(0, len(neural.outputLayer[0])):
+            # nodes & weights
+            for i in range(0, len(neural.nodes[leftLayer][0])):
                 # node
-                coordR = deepcopy(neural.nodeCoords[neural.outputInd][j])
-                color = neural.nodeColor0.lerp(neural.nodeColor1, neural.outputLayer[0][j])
+                coordL = neural.nodeCoords[leftLayer][i]
+                color = neural.nodeColor0.lerp(neural.nodeColor1, neural.nodes[leftLayer][0][i])
                 width = 1
-                if neural.outputLayer[0][j] >= neural.activationThreshold:
+                # print(neural.nodes)
+                # print(neural.nodes[leftLayer][0][i], " ", neural.activationThreshold)
+                if neural.nodes[leftLayer][0][i] >= neural.activationThreshold:
                     width = 0
-                pygame.draw.circle(window, color, coordR, neural.nodeRadius, width)
+                pygame.draw.circle(window, color, coordL, neural.nodeRadius, width)
 
                 # weight
-                coordR.x -= neural.nodeRadius
-                weight = neural.weights[i][j]
-                color = neural.weightColor0
-                if weight >= 0:
-                    color = neural.weightColor0.lerp(neural.weightColorPositive, weight)
-                else:
-                    color = neural.weightColor0.lerp(neural.weightColorNegative, -weight)
-                if neural.inputLayer[0][i] >= neural.activationThreshold and neural.outputLayer[0][j] >= neural.activationThreshold:
-                    color = neural.weightColor0.lerp(neural.nodeColor1, abs(weight))
-                pygame.draw.line(window, color, coordL, coordR)
-
                 
+                for j in range(0, len(neural.nodes[rightLayer][0])):
+                    # node
+                    coordR = neural.nodeCoords[rightLayer][j]
+                    color = neural.nodeColor0.lerp(neural.nodeColor1, neural.nodes[rightLayer][0][j])
+                    width = 1
+                    if neural.nodes[rightLayer][0][j] >= neural.activationThreshold:
+                        width = 0
+                    pygame.draw.circle(window, color, coordR, neural.nodeRadius, width)
+
+                    # weight
+                    weight = neural.weights[leftLayer][i][j]
+                    color = neural.weightColor0
+                    if weight >= 0:
+                        color = neural.weightColor0.lerp(neural.weightColorPositive, weight)
+                    else:
+                        color = neural.weightColor0.lerp(neural.weightColorNegative, -weight)
+                    if neural.nodes[leftLayer][0][i] >= neural.activationThreshold and neural.nodes[rightLayer][0][j] >= neural.activationThreshold:
+                        color = neural.weightColor0.lerp(neural.nodeColor1, abs(weight))
+                    pygame.draw.line(window, color, coordL + (neural.nodeRadius, 0), coordR + (-neural.nodeRadius, 0))
 
         # info panel
         self.textGeneration.draw(window)
