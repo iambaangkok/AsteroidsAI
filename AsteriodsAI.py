@@ -104,15 +104,12 @@ class AsteriodAI:
                 self.resetGames()
                 self.generation += 1
                 self.bestScoreThisGeneration = 0
+                self.breedNextGeneration()
 
             ##### UPDATE
            
             _dt = self.games[0].clock.tick(Config.frame_rate)*Config.speedmultiplier
             self.update(_dt)
-
-            ##### BREED
-
-            self.breedNextGeneration()
 
             ##### DRAW
 
@@ -139,6 +136,22 @@ class AsteriodAI:
             self.checkBestScore(game.id)
 
     def breedNextGeneration(self):
+        bNeural = self.bestNeuralNetwork
+        bWeights = bNeural.weights
+
+        for n in range(0, len(self.neuralNetworks)):
+            neural = self.neuralNetworks[n]
+            weights = neural.weights
+            for i in range(0, len(weights)):
+                for j in range(0, len(weights[i])):
+                    bW = bWeights[i][j]
+                    w = weights[i][j]
+                    avg = (bW+w)/2
+                    
+                    weights[i][j] = avg
+
+
+
         pass
 
     def draw(self, window):
