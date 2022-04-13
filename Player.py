@@ -39,7 +39,7 @@ class Player:
         self.moveAcceleration = 0.0006
         self.moveDeceleration = 0.0001
 
-        self.fireRate = 2 # x shots per second
+        self.fireRate = 5 # x shots per second
         self.shootInterval = 1/self.fireRate
         self.shootIntervalCounter = 0
 

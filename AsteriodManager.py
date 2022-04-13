@@ -14,7 +14,7 @@ class AsteriodManager:
 
         self.circleColor = Colors.YELLOW_DIRT
 
-        self.spawnRate = 4 # x per second
+        self.spawnRate = 100 # x per second
         self.spawnInterval = 1/self.spawnRate
         self.spawnIntervalCounter = self.spawnInterval #0
         self.limit = 40 # no more than x asteriods on screen at same time
@@ -24,10 +24,12 @@ class AsteriodManager:
     def update(self, _dt):
         self.spawnIntervalCounter += _dt/1000
 
-        if(self.spawnIntervalCounter >= self.spawnInterval):
+        while(self.spawnIntervalCounter >= self.spawnInterval):
             self.spawnIntervalCounter -= self.spawnInterval
             if(len(self.asteriods) < self.limit):
                 self.spawn()
+            else:
+                self.spawnIntervalCounter = 0
 
         newAsteriods = []
         
