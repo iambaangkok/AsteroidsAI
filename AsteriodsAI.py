@@ -85,11 +85,7 @@ class AsteriodAI:
             keys=pygame.key.get_pressed()
             
             if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
-                self.astManager = AsteriodManager(self.games)
-                for i in range(0, self.agentPerGeneration):
-                    game = self.games[i]
-                    game.setup()
-                self.frameCount = 0
+                self.resetGames()
 
             if keys[pygame.K_q] and keys[pygame.K_LCTRL]: # quit
                 self.simulatorState = 0
@@ -103,91 +99,88 @@ class AsteriodAI:
             self.textAgentAlive.text = 'agents alive: ' + str(isAlive)
             # print("ALIVE: ", isAlive)
             if(self.frameCount >= self.frameLimit or isAlive <= 0):
-                self.astManager = AsteriodManager(self.games)
                 for i in range(0, self.agentPerGeneration):
                     self.checkBestScore(self.games[i].id)
-                    game = self.games[i]
-                    game.setup()
-                self.frameCount = 0
+                self.resetGames()
                 self.generation += 1
                 self.bestScoreThisGeneration = 0
 
             ##### UPDATE
-            # game step
+           
             _dt = self.games[0].clock.tick(Config.frame_rate)*Config.speedmultiplier
-            self.astManager.update(_dt)
+            self.update(_dt)
 
-            for i in range(0, self.agentPerGeneration):
-                game = self.games[i]
-                neural = self.neuralNetworks[i]                
+            ##### BREED
 
-                # neural network
-                neural.computeOutput()
-                inputs = []
-                for i in range(0, len(neural.outputLayer[0])):
-                    inputs.append(neural.outputLayer[0][i] > neural.activationThreshold)
-
-                game.update(_dt, inputs)
-
-                self.checkBestScore(game.id)
+            self.breedNextGeneration()
 
             ##### DRAW
 
-            # draw black bg
-
-            for i in range(0, self.agentPerGeneration): # game draw
-                game = self.games[i]
-                updateDisplay = False
-                drawRay = False
-                drawPlayer = True
-                drawAsteriods = False
-                drawBullets = False
-                drawCoverUp = False
-                drawWindowBorder = False
-                drawScore = False
-                drawBg = False
-                game.player.playerWidth = 1
-
-                if game.id == self.bestGameId: # best game
-                    drawRay = True
-                    drawAsteriods = True
-                    drawBullets = True
-                    game.player.playerWidth = 0
-
-                if i == 0: # first game
-                    drawBg = True
-
-                if i == self.agentPerGeneration-1: # last game
-                    drawCoverUp = True
-                    drawWindowBorder = True
-                
-                game.draw(updateDisplay,drawRay,drawPlayer,drawAsteriods
-                ,drawBullets,drawCoverUp,drawWindowBorder,drawScore,drawBg )
-
-            
-            # user interface
-            self.updateUI()
-            self.drawUI(self.games[0].window)
-
-            #pygame.time.wait(math.floor(Config.frame_time_millis/Config.speedmultiplier))
+            self.draw(self.games[0].window)
 
         pygame.quit()
 
-    def checkBestScore(self, i):
-        # print("CHECK: ", i , " ",math.floor(self.games[i].scoreManager.score))
-        if math.floor(self.games[i].scoreManager.score) > self.bestScore:
-            self.bestScore = math.floor(self.games[i].scoreManager.score)
-        if math.floor(self.games[i].scoreManager.score) > self.bestScoreThisGeneration:
-            self.bestScoreThisGeneration = math.floor(self.games[i].scoreManager.score)
-            self.bestNeuralNetwork = self.neuralNetworks[i]
-            self.bestGameId = i
+    def update(self, _dt):
+        # game step
+        self.astManager.update(_dt)
+
+        for i in range(0, self.agentPerGeneration):
+            game = self.games[i]
+            neural = self.neuralNetworks[i]                
+
+            # neural network
+            neural.computeOutput()
+            inputs = []
+            for i in range(0, len(neural.outputLayer[0])):
+                inputs.append(neural.outputLayer[0][i] > neural.activationThreshold)
+
+            game.update(_dt, inputs)
+
+            self.checkBestScore(game.id)
+
+    def breedNextGeneration(self):
+        pass
+
+    def draw(self, window):
+        for i in range(0, self.agentPerGeneration): # game draw
+            game = self.games[i]
+            updateDisplay = False
+            drawRay = False
+            drawPlayer = True
+            drawAsteriods = False
+            drawBullets = False
+            drawCoverUp = False
+            drawWindowBorder = False
+            drawScore = False
+            drawBg = False
+            game.player.playerWidth = 1
+
+            if game.id == self.bestGameId: # best game
+                drawRay = True
+                drawAsteriods = True
+                drawBullets = True
+                game.player.playerWidth = 0
+
+            if i == 0: # first game
+                drawBg = True
+
+            if i == self.agentPerGeneration-1: # last game
+                drawCoverUp = True
+                drawWindowBorder = True
+            
+            game.draw(updateDisplay,drawRay,drawPlayer,drawAsteriods
+            ,drawBullets,drawCoverUp,drawWindowBorder,drawScore,drawBg )
+
+        
+        # user interface
+        self.updateUI()
+        self.drawUI(window)
 
     def updateUI(self):
         self.textBestScoreThisGeneration.text = 'best score this generation: ' + str(self.bestScoreThisGeneration)
         self.textBestScore.text = 'best score: ' + str(self.bestScore)
         self.textGeneration.text = 'generation: ' + str(self.generation)
-        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration)
-        
+        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration)       
 
     def drawUI(self, window):
         
@@ -241,6 +234,21 @@ class AsteriodAI:
 
         pygame.display.update()
 
+    def resetGames(self):
+        self.astManager = AsteriodManager(self.games)
+        for i in range(0, self.agentPerGeneration):
+            game = self.games[i]
+            game.setup()
+        self.frameCount = 0
+
+    def checkBestScore(self, i):
+        # print("CHECK: ", i , " ",math.floor(self.games[i].scoreManager.score))
+        if math.floor(self.games[i].scoreManager.score) > self.bestScore:
+            self.bestScore = math.floor(self.games[i].scoreManager.score)
+        if math.floor(self.games[i].scoreManager.score) > self.bestScoreThisGeneration:
+            self.bestScoreThisGeneration = math.floor(self.games[i].scoreManager.score)
+            self.bestNeuralNetwork = self.neuralNetworks[i]
+            self.bestGameId = i
 
 ###########################
 
