@@ -21,7 +21,7 @@ def main():
 class AsteriodAI:
     def __init__(self):
         pygame.init()
-        np.random.seed(1)
+        np.random.seed(Config.randomseed)
 
         self.simulatorState = 1
 

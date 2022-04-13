@@ -1,3 +1,4 @@
+import time
 
 screen_width, screen_height = 1280,720
 
@@ -12,6 +13,8 @@ game_bottom = game_y + game_height
 game_draw_bg = True
 
 genetic_agentpergeneration = 100
+randomseed = int(time.time()) 
+randomseed = 1
 
 infopanel_left = 60
 infopanel_right = game_x - 20
