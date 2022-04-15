@@ -17,11 +17,16 @@ genetic_agentpergeneration = 100
 
 score_per_second_surving = 50
 score_per_asteriod = 100
-score_per_distance_traveled = 1
+score_per_distance_traveled = 0.3
 
-random_fixedseedeverygeneration = True
+random_fixedseedeverygeneration = False
 randomseed = int(time.time()) 
 randomseed = 1
+
+speedmultiplier = 4
+frame_rate = 60
+frame_time = 1/frame_rate
+frame_time_millis = int(frame_time * 1000)
 
 infopanel_left = 60
 infopanel_right = game_x - 20
@@ -30,11 +35,6 @@ infopanel_bottom = game_bottom
 
 infopanel_width = infopanel_right - infopanel_left
 infopanel_height = game_height
-
-speedmultiplier = 1
-frame_rate = 60
-frame_time = 1/frame_rate
-frame_time_millis = int(frame_time * 1000)
 
 ##### DEBUG
 

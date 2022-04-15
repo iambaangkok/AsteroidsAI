@@ -38,6 +38,7 @@ class AsteriodAI:
 
         self.agentPerGeneration = Config.genetic_agentpergeneration
         self.mutationRate = 0.1
+        self.breedThreshold = 0.5 # if score >= bestScore * breedThreshold then breed
 
         self.games = []
         self.astManager = AsteriodManager(self.games)
@@ -84,6 +85,7 @@ class AsteriodAI:
                                     Config.game_left + 10, Config.game_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
+        self.games[0].clock.tick(Config.frame_rate)*Config.speedmultiplier
 
     def run(self):
         while(self.simulatorState != 0):
@@ -110,6 +112,7 @@ class AsteriodAI:
                 self.generation += 1
                 self.bestScoreThisGeneration = 0
                 self.breedNextGeneration()
+                self.games[0].clock.tick(Config.frame_rate)*Config.speedmultiplier
 
             ##### UPDATE
            
@@ -153,11 +156,11 @@ class AsteriodAI:
                         w = weights[i][j]
                         avg = w
                         if self.bestScoreThisGeneration >= self.bestScore: 
-                            avg = (bW+w)/2
+                            avg = (bW*1+w*2)/(1+2)
 
                         # mutate
                         mutation = (random.random() * 2 - 1) * self.mutationRate
-                        weights[i][j] = clamp(normalize(avg * (1+mutation), -1, 1), -1, 1)
+                        weights[i][j] = clamp(avg * (1+mutation), -1, 1)
 
         pass
 
