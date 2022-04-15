@@ -11,7 +11,7 @@ class NeuralNetwork:
     def __init__(self, game):
         self.game = game
 
-        self.nLayers = 3 # only input and output
+        self.nLayers = 3
         
         self.inputInd = 0
         self.outputInd = self.nLayers-1
@@ -27,7 +27,7 @@ class NeuralNetwork:
             self.hiddenLayer1[0].append(0)
         self.hiddenLayer1 = np.array(self.hiddenLayer1)
         
-        self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
+        self.outputLayer = np.array([[ 0, 0, 0, 0, 0, 0, 0 ]]).T
 
         self.nodes = [
             self.inputLayer,

@@ -60,9 +60,9 @@ class Player:
 
         # angular 
         angularInput = 0
-        if (keys[pygame.K_a] and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[0] and Config.debug_player_neuralcontrol):
+        if (keys[pygame.K_q] and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[0] and Config.debug_player_neuralcontrol):
             angularInput -= 1
-        if (keys[pygame.K_d] and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[1] and Config.debug_player_neuralcontrol):
+        if (keys[pygame.K_e] and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[1] and Config.debug_player_neuralcontrol):
             angularInput += 1            
 
         self.angularSpeed += angularInput * self.angularAcceleration * _dt
@@ -83,8 +83,20 @@ class Player:
             self.rotation = 360 - abs(self.rotation)
 
         # movement
-        if (keys[pygame.K_w] and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[3] and Config.debug_player_neuralcontrol):
+        if (keys[pygame.K_w] and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[3] and Config.debug_player_neuralcontrol):
             forward = Vector2(0,1).rotate(self.rotation).normalize()
+            self.moveSpeed.x += forward.x * self.moveAcceleration * _dt
+            self.moveSpeed.y += forward.y * self.moveAcceleration * _dt
+        if (keys[pygame.K_a] and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[4] and Config.debug_player_neuralcontrol):
+            forward = Vector2(0,1).rotate(self.rotation-90).normalize()
+            self.moveSpeed.x += forward.x * self.moveAcceleration * _dt
+            self.moveSpeed.y += forward.y * self.moveAcceleration * _dt
+        if (keys[pygame.K_s] and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[5] and Config.debug_player_neuralcontrol):
+            forward = Vector2(0,1).rotate(self.rotation-180).normalize()
+            self.moveSpeed.x += forward.x * self.moveAcceleration * _dt
+            self.moveSpeed.y += forward.y * self.moveAcceleration * _dt
+        if (keys[pygame.K_d] and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[6] and Config.debug_player_neuralcontrol):
+            forward = Vector2(0,1).rotate(self.rotation+90).normalize()
             self.moveSpeed.x += forward.x * self.moveAcceleration * _dt
             self.moveSpeed.y += forward.y * self.moveAcceleration * _dt
 
@@ -126,7 +138,7 @@ class Player:
 
         # shooting
         self.shootIntervalCounter += _dt/1000
-        if ((keys[pygame.K_SPACE] or keys[pygame.K_k]) and Config.debug_player_manualcontrol) or (len(inputs) >= 4 and inputs[2] and Config.debug_player_neuralcontrol):
+        if ((keys[pygame.K_SPACE] or keys[pygame.K_k]) and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[2] and Config.debug_player_neuralcontrol):
             if self.shootIntervalCounter >= self.shootInterval:
                 self.shootIntervalCounter = 0
                 self.shoot()
