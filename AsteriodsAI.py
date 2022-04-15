@@ -11,7 +11,7 @@ import Colors
 import Config
 from NeuralNetwork import NeuralNetwork
 from TextObject import TextObject
-from Utility import flip, normalize, sigmoid
+from Utility import clamp, flip, normalize, sigmoid
 from AsteriodsGame import AsteriodsGame
 
 
@@ -37,6 +37,7 @@ class AsteriodAI:
         self.frameCount = 0
 
         self.agentPerGeneration = Config.genetic_agentpergeneration
+        self.mutationRate = 0.1
 
         self.games = []
         self.astManager = AsteriodManager(self.games)
@@ -146,11 +147,13 @@ class AsteriodAI:
                     for j in range(0, len(weights[i])):
                         bW = bWeights[i][j]
                         w = weights[i][j]
-                        avg = (bW+w)/2
-                        
-                        weights[i][j] = avg
+                        avg = w
+                        if self.bestScoreThisGeneration >= self.bestScore: 
+                            avg = (bW+w)/2
 
-
+                        # mutate
+                        mutation = (random.random() * 2 - 1) * self.mutationRate
+                        weights[i][j] = clamp(normalize(avg * (1+mutation), -1, 1), -1, 1)
 
         pass
 
