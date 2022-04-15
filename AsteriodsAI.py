@@ -1,5 +1,6 @@
 from copy import deepcopy
 import math
+import random
 import numpy as np
 import pygame
 from pygame import Vector2
@@ -22,6 +23,7 @@ class AsteriodAI:
     def __init__(self):
         pygame.init()
         np.random.seed(Config.randomseed)
+        random.seed(Config.randomseed)
 
         self.simulatorState = 1
 
@@ -41,8 +43,8 @@ class AsteriodAI:
         for i in range(0, self.agentPerGeneration):
             self.games.append(AsteriodsGame(self))
             self.games[i].id = i
+        
         ##### Neural Network
-
         self.neuralNetworks = []
         for i in range(0, self.agentPerGeneration):
             self.neuralNetworks.append(NeuralNetwork(self.games[i]))
@@ -252,6 +254,9 @@ class AsteriodAI:
         pygame.display.update()
 
     def resetGames(self):
+        if Config.random_fixedseedeverygeneration:
+            np.random.seed(Config.randomseed)
+            random.seed(Config.randomseed)
         self.astManager = AsteriodManager(self.games)
         for i in range(0, self.agentPerGeneration):
             game = self.games[i]

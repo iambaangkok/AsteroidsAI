@@ -22,15 +22,17 @@ class AsteriodManager:
         self.asteriods = []
 
     def update(self, _dt):
+        # spawn
         self.spawnIntervalCounter += _dt/1000
-
+    
         while(self.spawnIntervalCounter >= self.spawnInterval):
             self.spawnIntervalCounter -= self.spawnInterval
             if(len(self.asteriods) < self.limit):
                 self.spawn()
             else:
                 self.spawnIntervalCounter = 0
-
+        
+        # update 
         newAsteriods = []
         
         for i in range(len(self.asteriods)):
