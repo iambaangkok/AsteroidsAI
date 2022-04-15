@@ -34,7 +34,7 @@ class Asteriod:
     def randomSelf(self):
         self.scale = random.random() * 3 + 3
         self.rotation = random.randint(0, 360)
-        self.moveSpeedMax = random.random() * 0.075 + 0.025
+        self.moveSpeedMax = random.random() * 0.2 + 0.025
 
         if((self.rotation > 270+45 and self.rotation <= 0) or (self.rotation >= 0 and self.rotation < 0+45)): #top spawn
             self.x = random.randint(Config.game_left+1,Config.game_right-1)

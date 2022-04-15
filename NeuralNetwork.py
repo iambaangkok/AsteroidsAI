@@ -77,7 +77,7 @@ class NeuralNetwork:
 
         for i in range(len(self.nodes[self.outputInd])):
             self.nodeCoords[self.outputInd].append(Vector2(self.nodePanelRight - self.nodeRadius*(1),
-                                                        120+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
+                                                        95+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
 
     def computeOutput(self):
         # get input

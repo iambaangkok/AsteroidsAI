@@ -137,11 +137,12 @@ class Player:
             self.y = Config.game_top
 
         # shooting
-        self.shootIntervalCounter += _dt/1000
-        if ((keys[pygame.K_SPACE] or keys[pygame.K_k]) and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[2] and Config.debug_player_neuralcontrol):
-            if self.shootIntervalCounter >= self.shootInterval:
-                self.shootIntervalCounter = 0
-                self.shoot()
+        if not Config.player_disableshooting:
+            self.shootIntervalCounter += _dt/1000
+            if ((keys[pygame.K_SPACE] or keys[pygame.K_k]) and Config.debug_player_manualcontrol) or (len(inputs) >= 7 and inputs[2] and Config.debug_player_neuralcontrol):
+                if self.shootIntervalCounter >= self.shootInterval:
+                    self.shootIntervalCounter = 0
+                    self.shoot()
 
     def shoot(self):
         self.game.bulletsManager.shoot()
