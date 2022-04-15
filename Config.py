@@ -15,6 +15,10 @@ game_draw_bg = True
 genetic_simulationtime = 60
 genetic_agentpergeneration = 100
 
+score_per_second_surving = 50
+score_per_asteriod = 100
+score_per_distance_traveled = 1
+
 random_fixedseedeverygeneration = True
 randomseed = int(time.time()) 
 randomseed = 1

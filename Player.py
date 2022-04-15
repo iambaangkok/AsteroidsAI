@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 import numpy as np
 import pygame
 from pygame import Vector2
@@ -104,9 +105,13 @@ class Player:
             factor = self.moveSpeedMax / self.moveSpeed.magnitude()
             self.moveSpeed *= factor
 
+        movementX = self.moveSpeed.x * _dt
+        movementY = self.moveSpeed.y * _dt
+        self.x += movementX
+        self.y += movementY
         
-        self.x += self.moveSpeed.x * _dt
-        self.y += self.moveSpeed.y * _dt
+        distanceTraveled = math.hypot(movementX, movementY)
+        self.game.scoreManager.addScoreFromTravelling(distanceTraveled)
 
         # screen border collision
         if self.x < Config.game_left :

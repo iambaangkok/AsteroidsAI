@@ -11,8 +11,9 @@ class ScoreManager:
         self.player = game.player
 
         self.score = 0
-        self.scorePerSecond = 50
-        self.scorePerAsteriod = 250
+        self.scorePerSecond = Config.score_per_second_surving
+        self.scorePerAsteriod = Config.score_per_asteriod
+        self.scorePerDistanceTraveled = Config.score_per_distance_traveled
 
         self.margin = 10
         self.x = Config.game_right - self.margin
@@ -28,6 +29,10 @@ class ScoreManager:
     def addScoreFromAsteriod(self):
         if self.player.isAlive:
             self.score += self.scorePerAsteriod
+
+    def addScoreFromTravelling(self, distanceTraveled):
+        if self.player.isAlive:
+            self.score += distanceTraveled * self.scorePerDistanceTraveled
 
     def draw(self, window):
         text = self.font.render('score: ' + str(math.floor(self.score)), True, Colors.WHITE)

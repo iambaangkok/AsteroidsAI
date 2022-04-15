@@ -68,6 +68,10 @@ class AsteriodAI:
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
+        self.textMutationRate = TextObject('mutation rate: ' + str(self.mutationRate),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"
+                                )                                
         self.textBestScoreThisGeneration = TextObject('best score this generation: ' + str(self.bestScoreThisGeneration),
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"       
@@ -248,6 +252,7 @@ class AsteriodAI:
         self.textGeneration.draw(window)
         self.textAgentPerGeneration.draw(window)
         self.textAgentAlive.draw(window)
+        self.textMutationRate.draw(window)
         self.textBestScoreThisGeneration.draw(window)
         self.textBestScore.draw(window)
         self.textFrameCount.draw(window)
