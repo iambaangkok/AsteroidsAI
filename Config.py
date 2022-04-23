@@ -23,7 +23,7 @@ score_per_second_surving = 100
 score_per_asteriod = 0.0
 score_per_distance_traveled = 0.0
 
-random_fixedseedeverygeneration = False
+random_fixedseedeverygeneration = True
 randomseed = int(time.time()) 
 randomseed = 1
 

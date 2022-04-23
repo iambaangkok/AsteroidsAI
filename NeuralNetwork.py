@@ -17,7 +17,7 @@ class NeuralNetwork:
         self.outputInd = self.nLayers-1
         
         self.inputLayer = [[]]
-        for i in range(0, len(self.game.raycaster.distance)):
+        for i in range(0, len(self.game.raycaster.distance), 2):
             self.inputLayer[0].append(self.game.raycaster.distance[i] )
         # self.inputLayer[0].append(self.game.player.rotation)
         self.inputLayer = np.array(self.inputLayer)
@@ -92,7 +92,7 @@ class NeuralNetwork:
     def computeOutput(self):
         # get input
         self.inputLayer = [[]]
-        for i in range(0, len(self.game.raycaster.distance)):
+        for i in range(0, len(self.game.raycaster.distance), 2):
             self.inputLayer[0].append(flip(normalize(self.game.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
         # self.inputLayer[0].append(normalize(self.game.player.rotation, 0, 360))
         self.inputLayer = np.array(self.inputLayer)

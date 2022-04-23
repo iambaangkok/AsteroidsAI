@@ -21,6 +21,9 @@ class AsteriodManager:
 
         self.asteriods = []
 
+        # FORCE STAYING IN PLACE TO BE OBSOLETE
+        self.spawn(False, Config.game_left + Config.game_width/2, Config.game_top + 1, 0, 0.2)
+
     def update(self, _dt):
         # spawn
         self.spawnIntervalCounter += _dt/1000
@@ -61,8 +64,14 @@ class AsteriodManager:
             if not ast.hasCollided[gameId]:
                 ast.draw(window)
 
-    def spawn(self):
+    def spawn(self, random = True, x = 0, y = 0, rotation = 0, moveSpeedMax = 1):
         ast = Asteriod()
         self.asteriods.append(ast)
         ast.circleColor = self.circleColor
         ast.randomSelf()
+        if not random:
+            ast.x = x
+            ast.y = y
+            ast.rotation = rotation
+            ast.moveSpeedMax = moveSpeedMax
+            ast.calculateMoveSpeed()
