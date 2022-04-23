@@ -17,12 +17,13 @@ class AsteriodManager:
         self.spawnRate = Config.asteriod_spawnrate # x per second
         self.spawnInterval = 1/self.spawnRate
         self.spawnIntervalCounter = self.spawnInterval #0
-        self.limit = self.spawnRate * Config.genetic_simulationtime # no more than x asteriods on screen at same time
+        self.limit = 1 #self.spawnRate * Config.genetic_simulationtime # no more than x asteriods on screen at same time
 
         self.asteriods = []
 
         # FORCE STAYING IN PLACE TO BE OBSOLETE
-        self.spawn(False, Config.game_left + Config.game_width/2, Config.game_top + 1, 0, 0.2)
+        self.spawn(False, Config.game_left + Config.game_width/2, Config.game_top + Config.game_height/2, 0, 0.1)
+
 
     def update(self, _dt):
         # spawn
@@ -44,12 +45,11 @@ class AsteriodManager:
 
             for j in range(0, len(self.games)):
                 game = self.games[j]
-                if checkCollisionCircle(ast, game.player) and not ast.hasCollided[game.id]:
-                    ast.hasCollided[game.id] = True
-                    ast.markedForDelete += 1
+                if not checkCollisionCircle(ast, game.player):
                     game.scoreManager.addScoreFromAsteriod()
 
                     game.player.isAlive = False
+
 
             # delete
             if ast.markedForDelete >= len(self.games):
@@ -61,7 +61,7 @@ class AsteriodManager:
     def draw(self, window, gameId):
         for i in range(len(self.asteriods)):
             ast = self.asteriods[i]
-            if not ast.hasCollided[gameId]:
+            if ast.hasCollided[gameId]:
                 ast.draw(window)
 
     def spawn(self, random = True, x = 0, y = 0, rotation = 0, moveSpeedMax = 1):

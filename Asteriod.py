@@ -11,8 +11,8 @@ import Colors
 class Asteriod:
 
     def __init__(self):
-        self.circleRadius = 8
-        self.scale = 3
+        self.circleRadius = Config.asteriod_radius
+        self.scale = Config.asteriod_scale
 
         self.circleColor = Colors.YELLOW_DIRT
 
@@ -25,14 +25,17 @@ class Asteriod:
         self.moveAcceleration = 0.02
         self.moveDeceleration = 0.0001
         
-        self.hasCollided = [False for i in range(0,Config.genetic_agentpergeneration)]
+        self.hasCollided = [True for i in range(0,Config.genetic_agentpergeneration)]
         self.markedForDelete = 0
+
+        self.rotationChangeInterval = 1
+        self.rotationChangeCounter = 0
 
         self.calculateMoveSpeed()
 
 
     def randomSelf(self):
-        self.scale = random.random() * 3 + 3
+        self.scale = Config.asteriod_scale
         self.rotation = random.randint(0, 360)
         self.moveSpeedMax = random.random() * 0.2 + 0.025
 
@@ -50,8 +53,8 @@ class Asteriod:
             self.y = random.randint(Config.game_left+1,Config.game_right-1)
         
         self.calculateMoveSpeed()
-            
         
+
     def calculateMoveSpeed(self):
         forward = Vector2(0,1).rotate(self.rotation).normalize()
         self.moveSpeed.x = forward.x * self.moveSpeedMax
@@ -62,6 +65,12 @@ class Asteriod:
             self.moveSpeed *= factor
 
     def update(self, _dt):
+
+        self.rotationChangeCounter += _dt/1000
+        if (self.rotationChangeCounter >= self.rotationChangeInterval):
+            self.rotationChangeCounter -= self.rotationChangeInterval
+            self.rotation = random.randint(0, 360)
+            self.calculateMoveSpeed()
 
         # movement
         self.x += self.moveSpeed.x * _dt
@@ -77,6 +86,8 @@ class Asteriod:
             self.y = Config.game_bottom
         if self.y > Config.game_bottom:
             self.y = Config.game_top
+
+        
 
     def draw(self, window):
         pygame.draw.circle(window, self.circleColor, (self.x, self.y), 1, 1)

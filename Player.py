@@ -19,7 +19,7 @@ class Player:
             Vector2(0,-3),
             Vector2(5,-4)
         ]
-        self.circleRadius = 8
+        self.circleRadius = Config.player_radius
         self.scale = 1.5
 
         self.polygonColor = Colors.GREEN_JUNGLE

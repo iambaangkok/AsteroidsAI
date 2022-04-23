@@ -44,6 +44,7 @@ class AsteriodAI:
 
         self.games = []
         self.astManager = AsteriodManager(self.games)
+        
 
         for i in range(0, self.agentPerGeneration):
             self.games.append(AsteriodsGame(self))
@@ -152,8 +153,8 @@ class AsteriodAI:
             # neural network
             neural.computeOutput()
             inputs = []
-            for i in range(0, len(neural.outputLayer[0])):
-                inputs.append(neural.outputLayer[0][i] > neural.activationThreshold)
+            for i in range(0, len(neural.nodes[neural.outputInd][0])):
+                inputs.append(neural.nodes[neural.outputInd][0][i] > neural.activationThreshold)
 
             game.update(_dt, inputs)
 

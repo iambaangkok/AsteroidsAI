@@ -50,7 +50,7 @@ class Raycaster:
         for j in range(0, len(asteriods)): # with help from khawhom
             ast = asteriods[j]
 
-            if ast.hasCollided[self.game.id]:
+            if not ast.hasCollided[self.game.id]:
                 continue
 
             x3 = ast.x
