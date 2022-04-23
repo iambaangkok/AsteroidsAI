@@ -44,6 +44,7 @@ class AsteriodAI:
 
         self.games = []
         self.astManager = AsteriodManager(self.games)
+
         for i in range(0, self.agentPerGeneration):
             self.games.append(AsteriodsGame(self))
             self.games[i].id = i
@@ -175,7 +176,7 @@ class AsteriodAI:
                         sign = np.sign(bW-w)
                         fitness = self.bestScoreThisGeneration/self.maxPossibleScore
                         difference = abs(bW-w)
-                        adjustment = sign*difference*fitness
+                        adjustment = sign*difference*fitness*0.5
 
                         weights[i][j] = w + adjustment
 
