@@ -91,7 +91,11 @@ class AsteriodAI:
         while(self.simulatorState != 0):
             keys=pygame.key.get_pressed()
             
-            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset
+            if keys[pygame.K_n] and keys[pygame.K_LCTRL]: # reset game and neural network
+                self.resetGames()
+                self.resetNeuralNetworks()
+
+            if keys[pygame.K_r] and keys[pygame.K_LCTRL]: # reset game
                 self.resetGames()
 
             if keys[pygame.K_q] and keys[pygame.K_LCTRL]: # quit
@@ -273,6 +277,11 @@ class AsteriodAI:
             game = self.games[i]
             game.setup()
         self.frameCount = 0
+    
+    def resetNeuralNetworks(self):
+        self.neuralNetworks.clear()
+        for i in range(0, self.agentPerGeneration):
+            self.neuralNetworks.append(NeuralNetwork(self.games[i]))
 
     def checkBestScore(self, i):
         # print("CHECK: ", i , " ",math.floor(self.games[i].scoreManager.score))

@@ -27,7 +27,7 @@ class NeuralNetwork:
             self.hiddenLayer1[0].append(0)
         self.hiddenLayer1 = np.array(self.hiddenLayer1)
         
-        self.outputLayer = np.array([[ 0, 0, 0, 0, 0, 0, 0 ]]).T
+        self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
 
         self.nodes = [
             self.inputLayer,
