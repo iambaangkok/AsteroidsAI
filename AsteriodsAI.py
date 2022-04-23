@@ -40,6 +40,8 @@ class AsteriodAI:
         self.mutationRate = 0.1
         self.breedThreshold = 0.5 # if score >= bestScore * breedThreshold then breed
 
+        self.maxPossibleScore = Config.score_per_second_surving*self.simulationTime
+
         self.games = []
         self.astManager = AsteriodManager(self.games)
         for i in range(0, self.agentPerGeneration):
@@ -72,12 +74,16 @@ class AsteriodAI:
         self.textMutationRate = TextObject('mutation rate: ' + str(self.mutationRate),
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
-                                )                                
-        self.textBestScoreThisGeneration = TextObject('best score this generation: ' + str(self.bestScoreThisGeneration),
+                                )
+        self.textMaxPossibleScore = TextObject('max possible score: ' + str(self.maxPossibleScore),
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"       
                                 ) 
-        self.textBestScore = TextObject('best score: ' + str(self.bestScore),
+        self.textBestScoreThisGeneration = TextObject('score this gen: ' + str(self.bestScoreThisGeneration) + '   fitness: ' + str(math.floor((self.bestScoreThisGeneration/self.maxPossibleScore)*100)/100.0),
+                                    Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"       
+                                ) 
+        self.textBestScore = TextObject('best score: ' + str(self.bestScore) + '   max fitness: ' + str(math.floor((self.bestScore/self.maxPossibleScore)*100)/100.0),
                                     Config.infopanel_left + 10, Config.infopanel_top + 10+16*TextObject.count, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
@@ -85,6 +91,11 @@ class AsteriodAI:
                                     Config.game_left + 10, Config.game_top + 10, 
                                     "UbuntuMono", 16, Colors.WHITE, "left", "top"
                                 )
+        self.textSpeedMultiplier = TextObject('speed multiplier: ' + str(math.floor(Config.speedmultiplier)),
+                                    Config.game_left + 10, Config.game_top + 10+16*1, 
+                                    "UbuntuMono", 16, Colors.WHITE, "left", "top"
+                                )
+        
         self.games[0].clock.tick(Config.frame_rate)*Config.speedmultiplier
 
     def run(self):
@@ -159,8 +170,14 @@ class AsteriodAI:
                         bW = bWeights[i][j]
                         w = weights[i][j]
                         avg = w
-                        if self.bestScoreThisGeneration >= self.bestScore: 
-                            avg = (bW*1+w*2)/(1+2)
+                        
+                        # breed according to fitness
+                        sign = np.sign(bW-w)
+                        fitness = self.bestScoreThisGeneration/self.maxPossibleScore
+                        difference = abs(bW-w)
+                        adjustment = sign*difference*fitness
+
+                        weights[i][j] = w + adjustment
 
                         # mutate
                         mutation = (random.random() * 2 - 1) * self.mutationRate
@@ -204,10 +221,12 @@ class AsteriodAI:
         self.drawUI(window)
 
     def updateUI(self):
-        self.textBestScoreThisGeneration.text = 'best score this generation: ' + str(self.bestScoreThisGeneration)
-        self.textBestScore.text = 'best score: ' + str(self.bestScore)
+        self.textMaxPossibleScore.text = 'max possible score: ' + str(self.maxPossibleScore)
+        self.textBestScoreThisGeneration.text = 'score this gen: ' + str(self.bestScoreThisGeneration) + '   fitness: ' + str(math.floor((self.bestScoreThisGeneration/self.maxPossibleScore)*100)/100.0)
+        self.textBestScore.text = 'best score: ' + str(self.bestScore) + '   max fitness: ' + str(math.floor((self.bestScore/self.maxPossibleScore)*100)/100.0)
         self.textGeneration.text = 'generation: ' + str(self.generation)
-        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime/Config.speedmultiplier)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration)       
+        self.textFrameCount.text = 'simulation time: ' + str(math.floor(self.simulationTime)) + '   frame: ' + str(self.frameCount) + '/' + str(self.frameLimit) + '   score: ' + str(self.bestScoreThisGeneration)
+        self.textSpeedMultiplier.text = 'speed multiplier: ' + str(math.floor(Config.speedmultiplier))
 
     def drawUI(self, window):
         
@@ -260,9 +279,11 @@ class AsteriodAI:
         self.textAgentPerGeneration.draw(window)
         self.textAgentAlive.draw(window)
         self.textMutationRate.draw(window)
+        self.textMaxPossibleScore.draw(window)
         self.textBestScoreThisGeneration.draw(window)
         self.textBestScore.draw(window)
         self.textFrameCount.draw(window)
+        self.textSpeedMultiplier.draw(window)
 
         pygame.draw.rect(self.games[0].window, Colors.WHITE_52, self.infopanelRect, 1)
 
