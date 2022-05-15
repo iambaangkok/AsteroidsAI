@@ -28,8 +28,8 @@ class Asteriod:
         self.hasCollided = [True for i in range(0,Config.genetic_agentpergeneration)]
         self.markedForDelete = 0
 
-        self.rotationChangeInterval = 1
-        self.rotationChangeCounter = 0
+        self.rotationChangeInterval = 2
+        self.rotationChangeCounter = self.rotationChangeInterval
 
         self.calculateMoveSpeed()
 
@@ -77,15 +77,10 @@ class Asteriod:
         self.y += self.moveSpeed.y * _dt
 
         # screen border collision
-        if self.x < Config.game_left :
-            self.x = Config.game_right
-        if self.x > Config.game_right:
-            self.x = Config.game_left
-
-        if self.y < Config.game_top :
-            self.y = Config.game_bottom
-        if self.y > Config.game_bottom:
-            self.y = Config.game_top
+        margin = 20
+        if self.x < Config.game_left+margin or self.x > Config.game_right-margin or self.y < Config.game_top+margin or self.y > Config.game_bottom-margin :
+            self.rotation += 180
+            self.calculateMoveSpeed()
 
         
 

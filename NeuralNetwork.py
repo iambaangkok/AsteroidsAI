@@ -11,7 +11,10 @@ class NeuralNetwork:
     def __init__(self, game):
         self.game = game
 
-
+        self.nLayers = 4
+        
+        self.inputInd = 0
+        self.outputInd = self.nLayers-1
         
         self.inputLayer = [[]]
         for i in range(0, len(self.game.raycaster.distance), 1):
@@ -29,22 +32,19 @@ class NeuralNetwork:
             self.hiddenLayer2[0].append(0)
         self.hiddenLayer2 = np.array(self.hiddenLayer1)
         
-        self.outputLayer = np.array([[ 0, 0, 0, 0 ]])
+        self.outputLayer = np.array([[ 0, 0, 0, 0 ]]).T
+
         self.nodes = [
             self.inputLayer,
             self.hiddenLayer1,
             self.hiddenLayer2,
             self.outputLayer
         ]
-
-        self.nLayers = len(self.nodes)
-        
-        self.inputInd = 0
-        self.outputInd = self.nLayers-1
         
         self.weights = []
-        for i in range(self.nLayers-1):
-            self.weights.append(2 * np.random.random((len(self.nodes[i][0]), len(self.nodes[i+1][0]))) -1)
+        self.weights.append(2 * np.random.random((len(self.nodes[self.inputInd][0]), len(self.nodes[1][0]))) -1)
+        self.weights.append(2 * np.random.random((len(self.nodes[1][0]), len(self.nodes[2][0]))) -1)
+        self.weights.append(2 * np.random.random((len(self.nodes[1][0]), len(self.nodes[self.outputInd]))) -1)
 
         # print(self.game.id, ' Random starting weights: ')
         # print(self.weights)
@@ -70,9 +70,9 @@ class NeuralNetwork:
         self.weightColorPositive = Colors.BLUE
         self.weightColorNegative = Colors.RED
 
-        self.activationThreshold = 0.8
+        self.activationThreshold = 0.9
 
-        self.nodeCoords = [[] for i in range(self.nLayers)]
+        self.nodeCoords = [[], [], [], []]
 
         for i in range(len(self.nodes[self.inputInd][0])):
             self.nodeCoords[self.inputInd].append(Vector2(self.nodepanelX + self.nodeRadius*(1),
@@ -85,7 +85,7 @@ class NeuralNetwork:
             self.nodeCoords[2].append(Vector2(self.nodepanelX + self.nodeRadius*(1) + self.layerGap*2,
                                                         60+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
 
-        for i in range(len(self.nodes[self.outputInd][0])):
+        for i in range(len(self.nodes[self.outputInd])):
             self.nodeCoords[self.outputInd].append(Vector2(self.nodePanelRight - self.nodeRadius*(1),
                                                         95+ self.nodepanelY + i*(self.nodeRadius*2 + self.nodeGap)))
 
@@ -93,12 +93,21 @@ class NeuralNetwork:
         # get input
         self.inputLayer = [[]]
         for i in range(0, len(self.game.raycaster.distance), 1):
-            self.inputLayer[0].append(flip(normalize(self.game.raycaster.distance[i], 0, 2*Config.asteriod_radius*Config.asteriod_scale), 0 , 1))
+            self.inputLayer[0].append(flip(normalize(self.game.raycaster.distance[i], 0, self.game.raycaster.lengthLimit), 0 , 1))
         # self.inputLayer[0].append(normalize(self.game.player.rotation, 0, 360))
-        self.nodes[self.inputInd] = np.array(self.inputLayer)
+        self.inputLayer = np.array(self.inputLayer)
 
-        for i in range(self.nLayers-1):
-            self.nodes[i+1] = np.array( sigmoid(np.dot(self.nodes[i], self.weights[i])) )
+        self.hiddenLayer1 = np.array( sigmoid(np.dot(self.inputLayer, self.weights[0])) )
 
-        # print(self.nodes[0].shape, " ", self.nodes[1].shape, " ", self.nodes[2].shape, " " , self.nodes[3].shape)
-        # print(self.weights[0].shape, " ", self.weights[1].shape, " ", self.weights[2].shape)
+        self.hiddenLayer2 = np.array( sigmoid(np.dot(self.hiddenLayer1, self.weights[1])) )
+
+        self.outputLayer = np.array( sigmoid(np.dot(self.hiddenLayer2, self.weights[2])) )
+
+        self.nodes = [
+            self.inputLayer,
+            self.hiddenLayer1,
+            self.hiddenLayer2,
+            self.outputLayer
+        ]
+        # print(self.inputLayer.shape, " ", self.hiddenLayer1.shape, " " , self.outputLayer.shape)
+        # print(self.weights[0].shape, " ", self.weights[1].shape)

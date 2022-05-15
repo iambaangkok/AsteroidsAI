@@ -36,7 +36,7 @@ class Player:
         self.x = Config.game_left + Config.game_width/2
         self.y = Config.game_top + Config.game_height/2
         self.moveSpeed = Vector2(0,0)
-        self.moveSpeedMax = 0.4
+        self.moveSpeedMax = 0.1
         self.moveAcceleration = 0.0006
         self.moveDeceleration = 0.0001
 

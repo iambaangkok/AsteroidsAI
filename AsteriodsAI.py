@@ -171,20 +171,17 @@ class AsteriodAI:
                     for j in range(0, len(weights[i])):
                         bW = bWeights[i][j]
                         w = weights[i][j]
-                        avg = w
                         
-                        # breed according to fitness
-                        sign = np.sign(bW-w)
-                        fitness = self.bestScoreThisGeneration/self.maxPossibleScore
-                        difference = abs(bW-w)
-                        adjustment = sign*difference*fitness*0.5
-
-                        weights[i][j] = w + adjustment
-
+                        rand = random.random()
+                        if(rand >= 0.5):
+                            weights[i][j] = bW
+                        else:
+                            weights[i][j] = w
+                        
                         # mutate
-                        mutation = (random.random() * 2 - 1) * self.mutationRate
-                        weights[i][j] = clamp(avg * (1+mutation), -1, 1)
-
+                        randM = random.random()
+                        if randM < self.mutationRate:
+                            weights[i][j] = clamp(weights[i][j]+random.random()/5,-1,1)
         pass
 
     def draw(self, window):
