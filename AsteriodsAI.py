@@ -154,7 +154,7 @@ class AsteriodAI:
             maxInput = 0
             maxInputIndex = 0
             for i in range(0, len(neural.outputLayer[0])):
-                if neural.outputLayer[0][i] > maxInput:
+                if neural.outputLayer[0][i] > maxInput and neural.outputLayer[0][i] > neural.activationThreshold:
                     maxInput = neural.outputLayer[0][i]
                     maxInputIndex = i
 
@@ -175,13 +175,15 @@ class AsteriodAI:
                 bWeights = bNeural.weights[layer]
                 weights = neural.weights[layer]
 
-                randC = random.random()*len(neural.weights)
-                randR = random.random()*len(neural.weights)
+                
+
                 for i in range(0, len(weights)):
                     for j in range(0, len(weights[i])):
                         bW = bWeights[i][j]
                         w = weights[i][j]
-                        if((i  < randR) or (i == randR and j <= randC)):
+
+                        rand = random.random()
+                        if(rand >= 0.5):
                             weights[i][j] = bW
                         else:
                             weights[i][j] = w
@@ -275,7 +277,7 @@ class AsteriodAI:
                     coordR = neural.nodeCoords[rightLayer][j]
                     color = neural.nodeColor0.lerp(neural.nodeColor1, neural.nodes[rightLayer][0][j])
                     width = 1
-                    if maxInputIndex == j and rightLayer == neural.outputInd:
+                    if maxInputIndex == j and rightLayer == neural.outputInd: #neural.nodes[rightLayer][0][j] >= neural.activationThreshold:
                         width = 0
                     pygame.draw.circle(window, color, coordR, neural.nodeRadius, width)
 

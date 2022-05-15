@@ -70,7 +70,7 @@ class NeuralNetwork:
         self.weightColorPositive = Colors.BLUE
         self.weightColorNegative = Colors.RED
 
-        self.activationThreshold = 1
+        self.activationThreshold = 0.9
 
         self.nodeCoords = [[], [], [], []]
 
