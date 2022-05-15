@@ -174,23 +174,22 @@ class AsteriodAI:
             for layer in range(0, len(neural.weights)):
                 bWeights = bNeural.weights[layer]
                 weights = neural.weights[layer]
+
+                randC = random.random()*len(neural.weights)
+                randR = random.random()*len(neural.weights)
                 for i in range(0, len(weights)):
                     for j in range(0, len(weights[i])):
                         bW = bWeights[i][j]
                         w = weights[i][j]
-                        avg = w
+                        if((i  < randR) or (i == randR and j <= randC)):
+                            weights[i][j] = bW
+                        else:
+                            weights[i][j] = w
                         
-                        # breed according to fitness
-                        sign = np.sign(bW-w)
-                        fitness = self.bestScoreThisGeneration/self.maxPossibleScore
-                        difference = abs(bW-w)
-                        adjustment = sign*difference*fitness*0.5
-
-                        weights[i][j] = w + adjustment
-
                         # mutate
-                        mutation = (random.random() * 2 - 1) * self.mutationRate
-                        weights[i][j] = clamp(avg * (1+mutation), -1, 1)
+                        randM = random.random()
+                        if randM < self.mutationRate:
+                            weights[i][j] = clamp(weights[i][j]+random.random()/5,-1,1)
 
         pass
 
@@ -243,7 +242,7 @@ class AsteriodAI:
 
         maxInput = 0
         maxInputIndex = 0
-        
+
         for i in range(0, len(neural.outputLayer[0])):
             if neural.outputLayer[0][i] > maxInput:
                 maxInput = neural.outputLayer[0][i]
