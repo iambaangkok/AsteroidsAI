@@ -27,7 +27,7 @@ random_fixedseedeverygeneration = False
 randomseed = int(time.time()) 
 randomseed = 1
 
-speedmultiplier = 4
+speedmultiplier = 10
 frame_rate = 60
 frame_time = 1/frame_rate
 frame_time_millis = int(frame_time * 1000)

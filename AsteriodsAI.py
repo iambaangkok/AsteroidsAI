@@ -14,7 +14,7 @@ from TextObject import TextObject
 from Utility import clamp, flip, normalize, sigmoid
 from AsteriodsGame import AsteriodsGame
 
-
+# GIT TEST COMMENT
 def main():
     astAI = AsteriodAI()
     astAI.run()
