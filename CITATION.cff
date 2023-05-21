@@ -1,0 +1,9 @@
+@misc{Baangkok2022,
+  author = {Baangkok Vanijyananda},
+  title = {AsteroidsAI},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/iambaangkok/AsteroidsAI}},
+  commit = {d1cd4ff01169f6795c3f52a04c5ffe6c8fa4da0a}
+}
