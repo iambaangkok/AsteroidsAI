@@ -1,5 +1,7 @@
 # AsteroidsAI
 
+![preview of the program](readme/AsteroidAI.png)
+
 ## PROJECT LEFT UNFINISHED
 **I STOPPED DOING THIS**
 
@@ -18,6 +20,16 @@ So it was 2022's summer break and I was bored. I have decided to start pursueing
 * I won't be using keras or tensorflow. This will all be coded from ground up.
 * Actions have acceleration and inertia.
 * There will be configurable mutation rate.
+
+## Running the Project
+* Clone this repository
+* Run `python ./AsteroidAI.py`
+* The game now has some functionality stripped away from your typical asteriods game in an attempt to make the game simpler for the genetic algorithm, if you wanna play a fuller version, try checking-out older commits.
+
+## Controls
+* Left Ctrl + N = reset game & neural network
+* Left Ctrl + R = reset game
+* Left Ctrl + Q = quit simulator
 
 ## Neurons
 * Inputs:
